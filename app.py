@@ -814,60 +814,59 @@ with tab1:
                             else:
                                 lbl.set_fontstyle('normal')
 
-                    st.subheader("Adicionar símbolo de significância manualmente")
+                    
+
+                    st.subheader("Adicionar símbolos por tratamento")
 
                     ativar_simbolo = st.checkbox(
-                        "Adicionar símbolo de significância?",
+                        "Adicionar símbolos de significância?",
                         value=False,
                         key="simbolo_manual"
                     )
-
+                    
                     if ativar_simbolo:
-                        simbolo = st.text_input(
-                            "Símbolo (ex: *, **, ***, a, b)",
-                            value="*",
-                            key="texto_simbolo"
-                        )
-
-                        grupo_alvo = st.multiselect(
-                            "Grupos que receberão o símbolo",
-                            options=labels_x,
-                                default=[l for l in labels_x if l.lower() != "wt"],
-                            key="grupo_simbolo"
-                        )
-
+                    
+                        st.markdown("Defina o símbolo de cada grupo (deixe vazio para não aplicar):")
+                    
+                        simbolos_por_grupo = {}
+                    
+                        for g in labels_x:
+                            simbolos_por_grupo[g] = st.text_input(
+                                f"Símbolo para {g}",
+                                value="",
+                                key=f"simbolo_{g}"
+                            )
+                    
                         altura_simbolo = st.number_input(
                             "Altura do símbolo (eixo Y)",
                             min_value=0.00000,
                             value=float(data[Eixo_y].max() * 1.1),
                             step=0.00001,
-                            format="%.6f",
-                            key="altura_simbolo"
+                            format="%.6f"
                         )
-
+                    
                         tamanho_simbolo = st.slider(
                             "Tamanho do símbolo",
                             min_value=8,
                             max_value=30,
-                            value=18,
-                            key="tamanho_simbolo"
+                            value=18
                         )
-
-                        # posição X correta
-                        # converter grupos selecionados em posições no eixo X
-                        x_pos = [ordem_desejada.index(g) for g in grupo_alvo if g in ordem_desejada]
-                        
-                        # desenhar símbolo em cada grupo selecionado
-                        for x in x_pos:
-                            ax2.text(
-                                x,
-                                altura_simbolo,
-                                simbolo,
-                                ha='center',
-                                va='bottom',
-                                fontsize=tamanho_simbolo,
-                                fontweight='bold'
-                            )
+                    
+                        # desenhar símbolos
+                        for grupo, simbolo in simbolos_por_grupo.items():
+                            if simbolo.strip() != "" and grupo in ordem_desejada:
+                    
+                                x = ordem_desejada.index(grupo)
+                    
+                                ax2.text(
+                                    x,
+                                    altura_simbolo,
+                                    simbolo,
+                                    ha='center',
+                                    va='bottom',
+                                    fontsize=tamanho_simbolo,
+                                    fontweight='bold'
+                                )
 
                     fig26.tight_layout()
 
