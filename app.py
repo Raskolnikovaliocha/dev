@@ -816,6 +816,8 @@ with tab1:
 
                     
 
+                   
+
                     st.subheader("Adicionar símbolos por tratamento")
 
                     ativar_simbolo = st.checkbox(
@@ -826,24 +828,26 @@ with tab1:
                     
                     if ativar_simbolo:
                     
-                        st.markdown("Defina o símbolo de cada grupo (deixe vazio para não aplicar):")
+                        st.markdown("Defina o símbolo e a altura para cada grupo (deixe símbolo vazio para não aplicar):")
                     
-                        simbolos_por_grupo = {}
+                        configuracao_simbolos = {}
                     
                         for g in labels_x:
-                            simbolos_por_grupo[g] = st.text_input(
-                                f"Símbolo para {g}",
-                                value="",
-                                key=f"simbolo_{g}"
-                            )
-                    
-                        altura_simbolo = st.number_input(
-                            "Altura do símbolo (eixo Y)",
-                            min_value=0.00000,
-                            value=float(data[Eixo_y].max() * 1.1),
-                            step=0.00001,
-                            format="%.6f"
-                        )
+                            configuracao_simbolos[g] = {
+                                "simbolo": st.text_input(
+                                    f"Símbolo para {g}",
+                                    value="",
+                                    key=f"simbolo_{g}"
+                                ),
+                                "altura": st.number_input(
+                                    f"Altura do símbolo para {g}",
+                                    min_value=0.00000,
+                                    value=float(data[Eixo_y].max() * 1.1),
+                                    step=0.00001,
+                                    format="%.6f",
+                                    key=f"altura_{g}"
+                                )
+                            }
                     
                         tamanho_simbolo = st.slider(
                             "Tamanho do símbolo",
@@ -852,15 +856,18 @@ with tab1:
                             value=18
                         )
                     
-                        # desenhar símbolos
-                        for grupo, simbolo in simbolos_por_grupo.items():
+                        # desenhar símbolos (um por grupo)
+                        for grupo, cfg in configuracao_simbolos.items():
+                            simbolo = cfg["simbolo"]
+                            altura = cfg["altura"]
+                    
                             if simbolo.strip() != "" and grupo in ordem_desejada:
                     
                                 x = ordem_desejada.index(grupo)
                     
                                 ax2.text(
                                     x,
-                                    altura_simbolo,
+                                    altura,
                                     simbolo,
                                     ha='center',
                                     va='bottom',
