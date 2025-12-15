@@ -814,56 +814,67 @@ with tab1:
                             else:
                                 lbl.set_fontstyle('normal')
 
-                    st.subheader("Adicionar símbolo de significância manualmente")
+                    
+
+                   
+
+                    st.subheader("Adicionar símbolos por tratamento")
 
                     ativar_simbolo = st.checkbox(
-                        "Adicionar símbolo de significância?",
+                        "Adicionar símbolos de significância?",
                         value=False,
                         key="simbolo_manual"
                     )
-
+                    
                     if ativar_simbolo:
-                        simbolo = st.text_input(
-                            "Símbolo (ex: *, **, ***, a, b)",
-                            value="*",
-                            key="texto_simbolo"
-                        )
-
-                        grupo_alvo = st.selectbox(
-                            "Grupo que receberá o símbolo",
-                            options=ordem_desejada,
-                            key="grupo_simbolo"
-                        )
-
-                        altura_simbolo = st.number_input(
-                            "Altura do símbolo (eixo Y)",
-                            min_value=0.00000,
-                            value=float(data[Eixo_y].max() * 1.1),
-                            step=0.00001,
-                            format="%.6f",
-                            key="altura_simbolo"
-                        )
-
+                    
+                        st.markdown("Defina o símbolo e a altura para cada grupo (deixe símbolo vazio para não aplicar):")
+                    
+                        configuracao_simbolos = {}
+                    
+                        for g in labels_x:
+                            configuracao_simbolos[g] = {
+                                "simbolo": st.text_input(
+                                    f"Símbolo para {g}",
+                                    value="",
+                                    key=f"simbolo_{g}"
+                                ),
+                                "altura": st.number_input(
+                                    f"Altura do símbolo para {g}",
+                                    min_value=0.00000,
+                                    value=float(data[Eixo_y].max() * 1.1),
+                                    step=0.00001,
+                                    format="%.6f",
+                                    key=f"altura_{g}"
+                                )
+                            }
+                    
                         tamanho_simbolo = st.slider(
                             "Tamanho do símbolo",
-                            min_value=8,
-                            max_value=30,
-                            value=18,
-                            key="tamanho_simbolo"
+                            min_value=0.05,
+                            max_value=30.00,
+                            value=10.00
                         )
+                    
+                        # desenhar símbolos (um por grupo)
+                        for grupo, cfg in configuracao_simbolos.items():
+                            simbolo = cfg["simbolo"]
+                            altura = cfg["altura"]
+                    
+                            if simbolo.strip() != "" and grupo in ordem_desejada:
+                    
+                                x = ordem_desejada.index(grupo)
+                    
+                                ax2.text(
+                                    x,
+                                    altura,
+                                    simbolo,
+                                    ha='center',
+                                    va='bottom',
+                                    fontsize=tamanho_simbolo,
+                                    fontweight='bold'
+                                )
 
-                        # posição X correta
-                        x_pos = ordem_desejada.index(grupo_alvo)
-
-                        ax2.text(
-                            x_pos,
-                            altura_simbolo,
-                            simbolo,
-                            ha='center',
-                            va='bottom',
-                            fontsize=tamanho_simbolo,
-                            fontweight='bold'
-                        )
                     fig26.tight_layout()
 
                     st.pyplot(fig26)
