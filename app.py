@@ -851,9 +851,9 @@ with tab1:
                     
                         tamanho_simbolo = st.slider(
                             "Tamanho do símbolo",
-                            min_value=8,
+                            min_value=0.05,
                             max_value=30,
-                            value=18
+                            value=10
                         )
                     
                         # desenhar símbolos (um por grupo)
