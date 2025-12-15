@@ -62,7 +62,7 @@ with tab1:
     #data = pd.read_csv(arquivo, encoding='UTF-8', sep=';')# data em dataFrame
     modelo = st.radio('Você deseja ver o modelo de entrada da tabela?', ['Sim', 'Não '])
     if modelo == 'Sim':
-        st.image("organizacao_tabela.png", caption="Modelo de tabela", width=300)
+        st.image("tabela.png", caption="Modelo de tabela", width=300)
         st.subheader('Configuração da **Planilha** ')
         st.warning('Células vazias devem ser preenchidas com **NA**')
         st.warning('Evitar colocar **pontuações** nos nomes das **variáveis**')
