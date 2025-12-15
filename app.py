@@ -832,7 +832,7 @@ with tab1:
                         grupo_alvo = st.multiselect(
                             "Grupos que receberão o símbolo",
                             options=labels_x,
-                                default=[l for l in labels_x if l.lower() != "wt",
+                                default=[l for l in labels_x if l.lower() != "wt"],
                             key="grupo_simbolo"
                         )
 
