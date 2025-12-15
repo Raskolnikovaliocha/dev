@@ -854,17 +854,21 @@ with tab1:
                         )
 
                         # posição X correta
-                        x_pos = ordem_desejada.index(grupo_alvo)
+                        # converter grupos selecionados em posições no eixo X
+                        x_pos = [ordem_desejada.index(g) for g in grupo_alvo if g in ordem_desejada]
+                        
+                        # desenhar símbolo em cada grupo selecionado
+                        for x in x_pos:
+                            ax2.text(
+                                x,
+                                altura_simbolo,
+                                simbolo,
+                                ha='center',
+                                va='bottom',
+                                fontsize=tamanho_simbolo,
+                                fontweight='bold'
+                            )
 
-                        ax2.text(
-                            x_pos,
-                            altura_simbolo,
-                            simbolo,
-                            ha='center',
-                            va='bottom',
-                            fontsize=tamanho_simbolo,
-                            fontweight='bold'
-                        )
                     fig26.tight_layout()
 
                     st.pyplot(fig26)
