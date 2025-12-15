@@ -829,7 +829,7 @@ with tab1:
                             key="texto_simbolo"
                         )
 
-                        grupo_alvo = st.selectbox(
+                        grupo_alvo = st.multiselect(
                             "Grupo que receberá o símbolo",
                             options=ordem_desejada,
                             key="grupo_simbolo"
