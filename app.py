@@ -469,10 +469,10 @@ with tab1:
 
                                             tamanho_texto_eixo = st.slider(
                                                 "Tamanho dos textos ",
-                                                min_value=0.5,
+                                                min_value=1,
                                                 max_value=32,
                                                 value=16,
-                                                step=0.5, key = '99p'
+                                                step=1, key = '99porta'
                                             )
 
                                             st.header('Gráfico boxplot')
