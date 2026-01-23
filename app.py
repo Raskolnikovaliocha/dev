@@ -910,7 +910,7 @@ with tab1:
                             "Tamanho do símbolo",
                             min_value=0.05,
                             max_value=30.00,
-                            value=10.00
+                            value=10.00,
                             key="tamanho_simbolo"
                         )
                     
