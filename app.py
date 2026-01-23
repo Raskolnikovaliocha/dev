@@ -875,6 +875,70 @@ with tab1:
                                     fontweight='bold'
                                 )
 
+                    st.subheader("Adicionar símbolos diferentes  por tratamento")
+
+                    ativar_diferentes = st.checkbox(
+                        "Adicionar símbolos de significância?",
+                        value=False,
+                        key="simbolo_manual2"
+                    )
+                    
+                    if ativar_diferentes:
+                    
+                        st.markdown("Defina o símbolo e a alturas para cada grupo (deixe símbolo vazio para não aplicar):")
+                    
+                        configuracao_simbolos = {}
+                    
+                        for g in labels_x:
+                            configuracao_simbolos[g] = {
+                                "simbolo": st.text_input(
+                                    f"Símbolo para {g}",
+                                    value="",
+                                    key=f"simbolodiferente_{g}"
+                                ),
+                                "altura": st.number_input(
+                                    f"Altura do símbolo para {g}",
+                                    min_value=0.00000,
+                                    value=float(data[Eixo_y].max() * 1.1),
+                                    step=0.00001,
+                                    format="%.6f",
+                                    key=f"alturadiferente_{g}"
+                                )
+                            }
+                    
+                        tamanho_simbolo = st.slider(
+                            "Tamanho do símbolo",
+                            min_value=0.05,
+                            max_value=30.00,
+                            value=10.00
+                            key="tamanho_simbolo"
+                        )
+                    
+                        # desenhar símbolos (um por grupo)
+                        for grupo, cfg in configuracao_simbolos.items():
+                            simbolo = cfg["simbolo"]
+                            altura = cfg["altura"]
+                    
+                            if simbolo.strip() != "" and grupo in ordem_desejada:
+                    
+                                x = ordem_desejada.index(grupo)
+                    
+                                ax2.text(
+                                    x,
+                                    altura,
+                                    simbolo,
+                                    ha='center',
+                                    va='bottom',
+                                    fontsize=tamanho_simbolo,
+                                    fontweight='bold'
+                                )
+
+
+
+
+                    
+                    
+
                     fig26.tight_layout()
 
                     st.pyplot(fig26)
