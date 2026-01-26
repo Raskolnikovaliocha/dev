@@ -785,6 +785,7 @@ with tab1:
                 
                         ax2.axvline(
                             x=posicao_linha,
+                            color='black',
                             linestyle='--',
                             linewidth=1.2
                         )
