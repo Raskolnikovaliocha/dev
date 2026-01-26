@@ -742,11 +742,27 @@ with tab1:
                     # Criar figura com tamanho ajustado pelo usuário
                     fig26, ax2 = plt.subplots(figsize=(largura_final, altura_final))
 
+                    pb_opcao = st.checkbox(
+                    "Destacar os dois primeiros tratamentos em branco e preto",
+                    value=False,
+                    key="pb_ttest_box"
+                    )
+
+                    n_box = len(ordem_desejada)
+
+                    # paleta base escolhida pelo usuário
+                    paleta_base = sns.color_palette(cores, n_colors=n_box)
+                    
+                    if pb_opcao and n_box >= 2:
+                        paleta_final = ['white', 'black'] + paleta_base[2:]
+                    else:
+                        paleta_final = paleta_base
+
                     sns.boxplot(
                         x=Axis_x,
                         y=Eixo_y,
                         order=ordem_desejada,
-                        palette=cores,
+                        palette=paleta_final,
                         data=data,
                         ax=ax2,
                         width=width,
@@ -754,6 +770,11 @@ with tab1:
                         fill=val_pre,
                         showfliers=False
                     )
+
+                    if pb_opcao:
+                        for patch in ax2.patches:
+                            patch.set_edgecolor('black')
+                            patch.set_linewidth(1.2)
 
                     # Ajustes de texto e eixos
                     ax2.set_ylabel(nome_eixo_y, fontsize=tamanho_texto_eixo, weight='bold', family=font1)
