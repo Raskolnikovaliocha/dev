@@ -806,7 +806,7 @@ with tab1:
                                 "Cinza claro": "#B0B0B0"
                             }
 
-                    t.subheader("Posição do título do eixo X")
+                    st.subheader("Posição do título do eixo X")
 
                     ativar_deslocamento_x = st.checkbox(
                         "Ajustar posição do título do eixo X?",
