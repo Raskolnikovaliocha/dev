@@ -773,20 +773,18 @@ with tab1:
                         width=width,
                         gap=gap,
                         fill=val_pre,
-                        showfliers=False
+                        showfliers=False,
+                        medianprops=dict(color='black', linewidth=2)
                     )
 
                     if pb_opcao:
-                        # cada boxplot desenha 6 linhas:
-                        # whisker baixo, whisker alto, cap baixo, cap alto, mediana, caixa
-                        for i, line in enumerate(ax2.lines):
-                            # a mediana é sempre a 5ª linha de cada grupo (índice 4)
-                            if i % 6 == 4:
-                                # só o segundo box (preto)
-                                if i // 6 == 1:
-                                    line.set_color('white')
-                                    line.set_linewidth(2)
-
+                        # cada box tem 6 linhas; a mediana é a 5ª
+                        medianas = ax2.lines[4::6]
+                    
+                        # segunda caixa (índice 1)
+                        if len(medianas) > 1:
+                            medianas[1].set_color('white')
+                            medianas[1].set_linewidth(2.5)
 
                     if ativar_linha:
                         posicao_linha = st.number_input(
