@@ -773,33 +773,35 @@ with tab1:
                         width=width,
                         gap=gap,
                         fill=val_pre,
-                        showfliers=False,
-                        medianprops=dict(color='black', linewidth=2)
+                        showfliers=False
+                      
                     )
 
                     if pb_opcao:
-                        # cada box tem 6 linhas; a mediana é a 5ª
-                        medianas = ax2.lines[4::6]
+                        n_boxes = len(ax2.artists)
+                        linhas_por_box = int(len(ax2.lines) / n_boxes)
                     
-                        # segunda caixa (índice 1)
-                        if len(medianas) > 1:
-                            medianas[1].set_color('white')
-                            medianas[1].set_linewidth(2.5)
-
+                        idx_box = 1  # segundo box
+                        mediana = ax2.lines[idx_box * linhas_por_box + 4]
+                    
+                        mediana.set_color('white')
+                        mediana.set_linewidth(2.8)
+                    # ---- LINHA SEPARADORA (opcional) ----
                     if ativar_linha:
                         posicao_linha = st.number_input(
                             "Posição da linha (ex: 1.5 separa o 2º do 3º box)",
                             value=1.5,
                             step=0.1
-                    )
-                
+                        )
+                    
                         ax2.axvline(
                             x=posicao_linha,
                             color='black',
                             linestyle='--',
                             linewidth=1.2
                         )
-
+                                                                    
+                                            
 
                     if pb_opcao:
                         for patch in ax2.patches:
