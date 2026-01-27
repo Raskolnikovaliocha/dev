@@ -779,9 +779,9 @@ with tab1:
                     
                         tamanho_pontos = st.slider(
                             "Tamanho dos pontos",
-                            min_value=1,
-                            max_value=10,
-                            value=4,
+                            min_value=1.0,
+                            max_value=10.0,
+                            value=4.0,
                             step=0.01
                         )
 
