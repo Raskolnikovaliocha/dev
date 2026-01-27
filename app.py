@@ -778,14 +778,15 @@ with tab1:
                     )
 
                     if pb_opcao:
-                        n_boxes = len(ax2.artists)
+                        n_boxes = len(ordem_desejada)
                         linhas_por_box = int(len(ax2.lines) / n_boxes)
                     
-                        idx_box = 1  # segundo box
+                        idx_box = 1  # segundo box (preto)
                         mediana = ax2.lines[idx_box * linhas_por_box + 4]
                     
                         mediana.set_color('white')
                         mediana.set_linewidth(2.8)
+
                     # ---- LINHA SEPARADORA (opcional) ----
                     if ativar_linha:
                         posicao_linha = st.number_input(
