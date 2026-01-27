@@ -806,6 +806,13 @@ with tab1:
                                 "Cinza claro": "#B0B0B0"
                             }
 
+                    t.subheader("Posição do título do eixo X")
+
+                    ativar_deslocamento_x = st.checkbox(
+                        "Ajustar posição do título do eixo X?",
+                        value=False
+                     )
+
                     sns.boxplot(
                         x=Axis_x,
                         y=Eixo_y,
@@ -867,9 +874,41 @@ with tab1:
                             patch.set_edgecolor('black')
                             patch.set_linewidth(1.2)
 
+
+                    if ativar_deslocamento_x:
+                        deslocamento_x = st.slider(
+                            "Deslocamento horizontal do título (0 = centro)",
+                            min_value=-1.0,
+                            max_value=1.0,
+                            value=0.0,
+                            step=0.01,
+                            help="Valores positivos movem para a direita, negativos para a esquerda"
+                        )
+                    
+                        deslocamento_y = st.slider(
+                            "Altura do título do eixo X",
+                            min_value=-0.5,
+                            max_value=0.5,
+                            value=-0.15,
+                            step=0.01
+                        )
+                    else:
+                        deslocamento_x = 0.5   # centro padrão do matplotlib
+                        deslocamento_y = -0.15
+                                        
+
+                    
+
                     # Ajustes de texto e eixos
                     ax2.set_ylabel(nome_eixo_y, fontsize=tamanho_texto_eixo, weight='bold', family=font1)
-                    ax2.set_xlabel(nome_eixo_x, fontsize=tamanho_texto_eixo, weight='bold', family=font1)
+                    ax2.set_xlabel(
+                        nome_eixo_x,
+                        fontsize=tamanho_texto_eixo,
+                        weight='bold',
+                        family=font1
+                    )
+
+                    ax2.xaxis.set_label_coords(deslocamento_x, deslocamento_y)
                     ax2.set_ylim(0, ymax2)
 
                     # Criar caixa completa (sem despine!)
