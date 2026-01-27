@@ -785,7 +785,7 @@ with tab1:
                         mediana = ax2.lines[idx_box * linhas_por_box + 4]
                     
                         mediana.set_color('white')
-                        mediana.set_linewidth(2.8)
+                        mediana.set_linewidth(1.6)
 
                     # ---- LINHA SEPARADORA (opcional) ----
                     if ativar_linha:
