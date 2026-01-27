@@ -776,6 +776,18 @@ with tab1:
                         showfliers=False
                     )
 
+                    if pb_opcao:
+                        # cada boxplot desenha 6 linhas:
+                        # whisker baixo, whisker alto, cap baixo, cap alto, mediana, caixa
+                        for i, line in enumerate(ax2.lines):
+                            # a mediana é sempre a 5ª linha de cada grupo (índice 4)
+                            if i % 6 == 4:
+                                # só o segundo box (preto)
+                                if i // 6 == 1:
+                                    line.set_color('white')
+                                    line.set_linewidth(2)
+
+
                     if ativar_linha:
                         posicao_linha = st.number_input(
                             "Posição da linha (ex: 1.5 separa o 2º do 3º box)",
