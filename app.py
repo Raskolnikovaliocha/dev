@@ -781,8 +781,30 @@ with tab1:
                             "Tamanho dos pontos",
                             min_value=1,
                             max_value=10,
-                            value=4
+                            value=4,
+                            step=0.01
                         )
+
+                        alpha_pontos = st.slider(
+                        "Transparência dos pontos",
+                        0.1, 1.0, 0.6, 0.05
+                        )
+                
+                        cor_pontos = st.selectbox(
+                            "Cor dos pontos",
+                            options=[
+                                "Preto",
+                                "Cinza escuro",
+                                "Cinza claro"
+                                ],
+                                index=1
+                            )
+                
+                        mapa_cores = {
+                                "Preto": "black",
+                                "Cinza escuro": "#4D4D4D",
+                                "Cinza claro": "#B0B0B0"
+                            }
 
                     sns.boxplot(
                         x=Axis_x,
@@ -807,9 +829,9 @@ with tab1:
                             data=data,
                             ax=ax2,
                             jitter=jitter_pontos,      # slider que você criou
-                            size=tamanho_pontos,       # slider que você criou
-                            color="black",             # ou cinza escuro
-                            alpha=0.6,                 # transparência
+                            size=tamanho_pontos, # slider que você criou
+                            color=mapa_cores[cor_pontos],            # ou cinza escuro
+                            alpha=alpha_pontos,              # transparência
                             dodge=False
                         )
 
