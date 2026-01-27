@@ -768,6 +768,22 @@ with tab1:
                     value=False
                         )
 
+                    if ativar_pontos:
+                        jitter_pontos = st.slider(
+                            "Dispersão horizontal dos pontos (jitter)",
+                            min_value=0.0,
+                            max_value=0.5,
+                            value=0.15,
+                            step=0.01
+                        )
+                    
+                        tamanho_pontos = st.slider(
+                            "Tamanho dos pontos",
+                            min_value=1,
+                            max_value=10,
+                            value=4
+                        )
+
                     sns.boxplot(
                         x=Axis_x,
                         y=Eixo_y,
