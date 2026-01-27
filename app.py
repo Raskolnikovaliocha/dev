@@ -763,6 +763,11 @@ with tab1:
                     value=False
                     )
 
+                    ativar_pontos = st.checkbox(
+                    "Adicionar pontos individuais (dados brutos)?",
+                    value=False
+                        )
+
                     sns.boxplot(
                         x=Axis_x,
                         y=Eixo_y,
@@ -776,6 +781,21 @@ with tab1:
                         showfliers=False
                       
                     )
+
+                    # pontos (APÓS o boxplot)
+                    if ativar_pontos:
+                        sns.stripplot(
+                            x=Axis_x,
+                            y=Eixo_y,
+                            order=ordem_desejada,
+                            data=data,
+                            ax=ax2,
+                            jitter=jitter_pontos,      # slider que você criou
+                            size=tamanho_pontos,       # slider que você criou
+                            color="black",             # ou cinza escuro
+                            alpha=0.6,                 # transparência
+                            dodge=False
+                        )
 
                     if pb_opcao:
                         n_boxes = len(ordem_desejada)
