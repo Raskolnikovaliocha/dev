@@ -8,6 +8,7 @@ import sys
 import matplotlib.patches as patches
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
+from matplotlib.patches import Rectangle
 
 
 from narwhals.selectors import categorical
@@ -895,6 +896,55 @@ with tab1:
                     else:
                         deslocamento_x = 0.5   # centro padrão do matplotlib
                         deslocamento_y = -0.15
+
+
+
+                    st.subheader("Faixa separadora abaixo do eixo X")
+
+                    ativar_faixa = st.checkbox(
+                        "Adicionar faixa preta entre o título e os rótulos do eixo X?",
+                        value=False
+                     )
+
+                    if ativar_faixa:
+                        altura_faixa = st.slider(
+                            "Altura da faixa",
+                            min_value=0.005,
+                            max_value=0.08,
+                            value=0.02,
+                            step=0.005
+                        )
+                    
+                        posicao_faixa = st.slider(
+                            "Posição vertical da faixa (negativo = abaixo do eixo)",
+                            min_value=-0.3,
+                            max_value=0.0,
+                            value=-0.12,
+                            step=0.01
+                        )
+                    
+                        cor_faixa = st.selectbox(
+                            "Cor da faixa",
+                            ["Preto", "Cinza escuro"],
+                            index=0
+                        )
+                    
+                        mapa_cor_faixa = {
+                            "Preto": "black",
+                            "Cinza escuro": "#4D4D4D"
+                        }
+
+                    if ativar_faixa:
+                        faixa = Rectangle(
+                            (0, posicao_faixa),      # x inicial, y (abaixo do eixo)
+                            1,                       # largura total do eixo
+                            altura_faixa,            # altura da faixa
+                            transform=ax2.transAxes, # <<< ESSENCIAL
+                            color=mapa_cor_faixa[cor_faixa],
+                            clip_on=False
+                            )
+                        ax2.add_patch(faixa)
+
                                         
 
                     
@@ -1090,8 +1140,9 @@ with tab1:
                     
                     
 
-                    fig26.tight_layout()
+                    #fig26.tight_layout()
 
+                    fig26.tight_layout(rect=[0, 0.08, 1, 1])
                     st.pyplot(fig26)
 
 
