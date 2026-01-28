@@ -934,12 +934,32 @@ with tab1:
                             "Cinza escuro": "#4D4D4D"
                         }
 
+                        deslocamento_faixa_x = st.slider(
+                        "Deslocamento horizontal da faixa",
+                        min_value=-0.5,
+                        max_value=0.5,
+                        value=0.0,
+                        step=0.01,
+                        help="Valores positivos movem a faixa para a direita"
+                        )
+                    
+                        largura_faixa_x = st.slider(
+                            "Largura horizontal da faixa",
+                            min_value=0.1,
+                            max_value=1.0,
+                            value=1.0,
+                            step=0.01,
+                            help="1.0 ocupa todo o eixo X"
+                        )
+
                     if ativar_faixa:
+                        x_faixa = 0.5 - largura_faixa_x / 2 + deslocamento_faixa_x
+
                         faixa = Rectangle(
-                            (0, posicao_faixa),      # x inicial, y (abaixo do eixo)
-                            1,                       # largura total do eixo
-                            altura_faixa,            # altura da faixa
-                            transform=ax2.transAxes, # <<< ESSENCIAL
+                            (x_faixa, posicao_faixa),
+                            largura_faixa_x,
+                            altura_faixa,
+                            transform=ax2.transAxes,
                             color=mapa_cor_faixa[cor_faixa],
                             clip_on=False
                             )
