@@ -912,7 +912,7 @@ with tab1:
                             min_value=0.005,
                             max_value=0.08,
                             value=0.02,
-                            step=0.005
+                            step=0.001
                         )
                     
                         posicao_faixa = st.slider(
