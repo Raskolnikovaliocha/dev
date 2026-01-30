@@ -831,18 +831,18 @@ with tab1:
                      )
 
                     sns.boxplot(
-                        x=Axis_x,
-                        y=Eixo_y,
-                        order=ordem_desejada,
-                        palette=paleta_final,
-                        data=data,
-                        ax=ax2,
-                        width=width,
-                        gap=gap,
-                        fill=val_pre,
-                        showfliers=False
-                      
-                    )
+                    x=Axis_x,
+                    y=Eixo_y,
+                    order=ordem_desejada,
+                    palette=paleta_final,
+                    data=data,
+                    ax=ax2,
+                    width=width,
+                    gap=gap,
+                    fill=val_pre,
+                    showfliers=False,
+                    medianprops=dict(color='white', linewidth=1.2)
+                        )
 
                     # pontos (APÓS o boxplot)
                     if ativar_pontos:
