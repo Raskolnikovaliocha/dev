@@ -844,6 +844,23 @@ with tab1:
                     
                         )
 
+
+                    if pb_opcao:
+                        n_boxes = len(ordem_desejada)
+                        linhas_por_box = int(len(ax2.lines) / n_boxes)
+                    
+                        idx_box = 1  # segundo box (preto)
+                        mediana = ax2.lines[idx_box * linhas_por_box + 4]
+                    
+                        mediana.set_color('white')
+                        mediana.set_linewidth(1.0)
+
+                    if pb_opcao:
+                        for patch in ax2.patches:
+                            patch.set_edgecolor('black')
+                            patch.set_linewidth(1.2)
+
+
                     # pontos (APÓS o boxplot)
                     if ativar_pontos:
                         sns.stripplot(
@@ -859,23 +876,11 @@ with tab1:
                             dodge=False
                         )
 
-                    if pb_opcao:
-                        n_boxes = len(ordem_desejada)
-                        linhas_por_box = int(len(ax2.lines) / n_boxes)
-                    
-                        idx_box = 1  # segundo box (preto)
-                        mediana = ax2.lines[idx_box * linhas_por_box + 4]
-                    
-                        mediana.set_color('white')
-                        mediana.set_linewidth(1.0)
-
+                  
                                         
                                             
 
-                    if pb_opcao:
-                        for patch in ax2.patches:
-                            patch.set_edgecolor('black')
-                            patch.set_linewidth(1.2)
+                    
 
 
                     if ativar_deslocamento_x:
