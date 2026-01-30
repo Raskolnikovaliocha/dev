@@ -855,10 +855,7 @@ with tab1:
                         mediana.set_color('white')
                         mediana.set_linewidth(1.0)
 
-                    if pb_opcao:
-                        for patch in ax2.patches:
-                            patch.set_edgecolor('black')
-                            patch.set_linewidth(1.2)
+                    
 
 
                     # pontos (APÓS o boxplot)
