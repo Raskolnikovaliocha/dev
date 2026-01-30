@@ -865,7 +865,7 @@ with tab1:
                             xmin=idx - meia_largura,
                             xmax=idx + meia_largura,
                             colors="white",
-                            linewidth=1,
+                            linewidth=0.9,
                             zorder=10  # MUITO IMPORTANTE
                         )
                     
