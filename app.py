@@ -846,25 +846,30 @@ with tab1:
 
 
                     if pb_opcao:
-                         boxes = ax2.artists  # cada box individual
-
-                         for i, box in enumerate(boxes):
-                            # cada box tem 6 linhas associadas:
-                            # whisker, whisker, cap, cap, median, fliers
-                            linhas = ax2.lines[i*6:(i+1)*6]
+                      # índice do box preto (segundo box)
+                        idx = 1
                     
-                            mediana = linhas[4]  # SEMPRE a mediana
+                        # dados do grupo preto
+                        grupo_preto = ordem_desejada[idx]
+                        dados = data[data[Axis_x] == grupo_preto][Eixo_y]
                     
-                            if i == 1:  # segundo box (preto)
-                                mediana.set_color("white")
-                                mediana.set_linewidth(1.5)
-                            else:
-                                mediana.set_color("black")
-                                mediana.set_linewidth(1.2)
-                                        
-
-
-                    # pontos (APÓS o boxplot)
+                        # valor da mediana real
+                        y_med = dados.median()
+                    
+                        # largura do box (mesma do seaborn)
+                        meia_largura = width / 2
+                    
+                        # desenhar mediana branca POR CIMA
+                        ax2.hlines(
+                            y=y_med,
+                            xmin=idx - meia_largura,
+                            xmax=idx + meia_largura,
+                            colors="white",
+                            linewidth=2.0,
+                            zorder=10  # MUITO IMPORTANTE
+                        )
+                    
+                                        # pontos (APÓS o boxplot)
                     if ativar_pontos:
                         sns.stripplot(
                             x=Axis_x,
