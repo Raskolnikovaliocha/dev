@@ -764,6 +764,22 @@ with tab1:
                     value=False
                     )
 
+                     # ---- LINHA SEPARADORA (opcional) ----
+                    if ativar_linha:
+                        posicao_linha = st.number_input(
+                            "Posição da linha (ex: 1.5 separa o 2º do 3º box)",
+                            value=1.5,
+                            step=0.1
+                        )
+                    
+                        ax2.axvline(
+                            x=posicao_linha,
+                            color='black',
+                            linestyle='--',
+                            linewidth=1.2
+                        )
+                                               
+
                     ativar_pontos = st.checkbox(
                     "Adicionar pontos individuais (dados brutos)?",
                     value=False
@@ -853,21 +869,7 @@ with tab1:
                         mediana.set_color('white')
                         mediana.set_linewidth(1.0)
 
-                    # ---- LINHA SEPARADORA (opcional) ----
-                    if ativar_linha:
-                        posicao_linha = st.number_input(
-                            "Posição da linha (ex: 1.5 separa o 2º do 3º box)",
-                            value=1.5,
-                            step=0.1
-                        )
-                    
-                        ax2.axvline(
-                            x=posicao_linha,
-                            color='black',
-                            linestyle='--',
-                            linewidth=1.2
-                        )
-                                                                    
+                                        
                                             
 
                     if pb_opcao:
