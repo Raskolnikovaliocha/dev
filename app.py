@@ -841,7 +841,7 @@ with tab1:
                     gap=gap,
                     fill=val_pre,
                     showfliers=False,
-                    medianprops=dict(color='white', linewidth=1.2)
+                    
                         )
 
                     # pontos (APÓS o boxplot)
