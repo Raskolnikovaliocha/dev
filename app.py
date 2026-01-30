@@ -846,16 +846,22 @@ with tab1:
 
 
                     if pb_opcao:
-                        n_boxes = len(ordem_desejada)
-                        linhas_por_box = int(len(ax2.lines) / n_boxes)
-                    
-                        idx_box = 1  # segundo box (preto)
-                        mediana = ax2.lines[idx_box * linhas_por_box + 4]
-                    
-                        mediana.set_color('white')
-                        mediana.set_linewidth(1.0)
+                         boxes = ax2.artists  # cada box individual
 
+                         for i, box in enumerate(boxes):
+                            # cada box tem 6 linhas associadas:
+                            # whisker, whisker, cap, cap, median, fliers
+                            linhas = ax2.lines[i*6:(i+1)*6]
                     
+                            mediana = linhas[4]  # SEMPRE a mediana
+                    
+                            if i == 1:  # segundo box (preto)
+                                mediana.set_color("white")
+                                mediana.set_linewidth(1.5)
+                            else:
+                                mediana.set_color("black")
+                                mediana.set_linewidth(1.2)
+                                        
 
 
                     # pontos (APÓS o boxplot)
