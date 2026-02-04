@@ -125,7 +125,7 @@ with tab1:
                             st.write('Dados com valores médios substituidos no lugar de NA')
                             st.dataframe(data)
                         else:
-                            data = data.dropna(axis=0)
+                            data = data.dropna(axis=1)
                             st.dataframe(data)  # manter o mes
 
 
