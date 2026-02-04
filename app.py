@@ -99,10 +99,11 @@ with tab1:
 
             continua = st.selectbox('Escolha a variável contínua',['Selecione'] + chaves1, key = '2')
             if continua != 'Selecione': #Escolha essa depois que a primeira é escolhida
+                assert continua in data.columns, f"Coluna {continua} não encontrada"
                 st.success(f"Você escolheu a variável contínua: {continua}")
                 #bamos
                 
-                assert continua in data.columns, f"Coluna {continua} não encontrada"
+              
 
                 if categorica != 'Selecione' and continua != 'Selecione':
                     escolhas.append(categorica)
