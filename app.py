@@ -78,7 +78,7 @@ with tab1:
         st.success(f"O arquivo selecionado foi: {arquivo.name}")
 
         data = pd.read_csv(arquivo, encoding='UTF-8', sep=';')
-        data_copia = data.copy
+        data_copia = data.copy()
 
         escolha = st.radio("Você deseja ver seus dados ?", ["Sim", "Não"]).upper().strip()
         if escolha == 'SIM':
