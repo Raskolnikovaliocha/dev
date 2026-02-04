@@ -100,6 +100,9 @@ with tab1:
             continua = st.selectbox('Escolha a variável contínua',['Selecione'] + chaves1, key = '2')
             if continua != 'Selecione': #Escolha essa depois que a primeira é escolhida
                 st.success(f"Você escolheu a variável contínua: {continua}")
+                #bamos
+                
+                assert continua in data.columns, f"Coluna {continua} não encontrada"
 
                 if categorica != 'Selecione' and continua != 'Selecione':
                     escolhas.append(categorica)
@@ -198,10 +201,13 @@ with tab1:
                     data_iqr = data.merge(limites, on=categorica)
                     
                     # Marca outliers
+                    valores = data_iqr[continua].values
+
                     data_iqr['outlier'] = (
-                    (data_iqr.loc[:, continua] < data_iqr.loc[:, 'LI']) |
-                    (data_iqr.loc[:, continua] > data_iqr.loc[:, 'LS'])
-                )
+                        (valores < data_iqr['LI'].values) |
+                        (valores > data_iqr['LS'].values)
+                    )
+
                     st.write('Limites de outliers por tratamento')
                     st.dataframe(limites)
                     
