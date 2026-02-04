@@ -173,12 +173,10 @@ with tab1:
                     # ============================================================
                     # OUTLIERS (IQR POR TRATAMENTO)
                     # ============================================================
+                    # ============================================================
+                    # OUTLIERS (IQR POR TRATAMENTO) — VERSÃO FUNCIONAL
+                    # ============================================================
                     st.subheader('Outliers (IQR por tratamento)')
-                    
-                    st.write(
-                        'Os outliers são identificados **dentro de cada tratamento**, '
-                        'utilizando o método do Intervalo Interquartil (1.5 × IQR).'
-                    )
                     
                     def limites_iqr(x):
                         Q1 = x.quantile(0.25)
@@ -189,25 +187,24 @@ with tab1:
                             'LS': Q3 + 1.5 * IQR
                         })
                     
-                    # Calcula limites por tratamento
+                    # calcula apenas os limites (SEM levar a coluna continua)
                     limites = (
                         data
                         .groupby(categorica)[continua]
                         .apply(limites_iqr)
                         .reset_index()
+                        [[categorica, 'LI', 'LS']]
                     )
                     
-                    # Junta com os dados
-                    data_iqr = data.merge(limites, on=categorica)
+                    # merge seguro (continua NÃO some)
+                    data_iqr = data.merge(limites, on=categorica, how='left')
                     
-                    # Marca outliers
-                    valores = data_iqr[continua].values
-
+                    # marca outliers
                     data_iqr['outlier'] = (
-                        (valores < data_iqr['LI'].values) |
-                        (valores > data_iqr['LS'].values)
+                        (data_iqr[continua] < data_iqr['LI']) |
+                        (data_iqr[continua] > data_iqr['LS'])
                     )
-
+                    
                     st.write('Limites de outliers por tratamento')
                     st.dataframe(limites)
                     
@@ -218,6 +215,7 @@ with tab1:
                     else:
                         st.warning('Outliers identificados por tratamento:')
                         st.dataframe(outliers)
+
                     
                     # ============================================================
                     # DECISÃO DO USUÁRIO (ETAPA FUNDAMENTAL)
