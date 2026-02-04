@@ -190,11 +190,11 @@ with tab1:
                     
                     # calcula apenas os limites (SEM levar a coluna continua)
                     limites = (
-                        data
-                        .groupby(categorica)[continua]
-                        .apply(limites_iqr)
-                        .reset_index()
-                        [[categorica, 'LI', 'LS']]
+                        data.groupby(categorica)[continua].agg(
+                        LI=lambda x: x.quantile(0.25) - 1.5 * (x.quantile(0.75) - x.quantile(0.25)),
+                        LS=lambda x: x.quantile(0.75) + 1.5 * (x.quantile(0.75) - x.quantile(0.25))
+                    )
+                    .reset_index()
                     )
                     
                     # merge seguro (continua NÃO some)
