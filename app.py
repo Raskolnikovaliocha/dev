@@ -199,10 +199,9 @@ with tab1:
                     
                     # Marca outliers
                     data_iqr['outlier'] = (
-                        (data_iqr[continua] < data_iqr['LI']) |
-                        (data_iqr[continua] > data_iqr['LS'])
-                    )
-                    
+                    (data_iqr.loc[:, continua] < data_iqr.loc[:, 'LI']) |
+                    (data_iqr.loc[:, continua] > data_iqr.loc[:, 'LS'])
+                )
                     st.write('Limites de outliers por tratamento')
                     st.dataframe(limites)
                     
