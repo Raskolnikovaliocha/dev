@@ -136,123 +136,160 @@ with tab1:
                     cv2 =  np.std(cv) / np.mean(cv) * 100
                     st.write(f"CV% = {cv2}")
 
-                    st.subheader('Z-score ')
-                    zscore = (data[continua] - np.mean(data[continua])) / np.std(data[continua])
-                    data2 = data.copy()
-                    data2['zscore'] = zscore
-                    st.write(data2)
-                    # print(zscore)
-
-                    #plotar a curva de KDE
+                    #aqui 
+                    # ============================================================
+                    # Z-SCORE (POR TRATAMENTO – APENAS VISUALIZAÇÃO)
+                    # ============================================================
+                    st.subheader('Z-score (por tratamento)')
+                    
+                    data = data.copy()
+                    
+                    data['zscore'] = (
+                        data
+                        .groupby(categorica)[continua]
+                        .transform(lambda x: (x - x.mean()) / x.std())
+                    )
+                    
+                    st.write(data)
+                    
+                    # KDE
                     fig2, ax = plt.subplots()
-                    sns.kdeplot(data=data2, x='zscore', fill=True, alpha=0.3)
-                    ax.set_title("Curva de KDE para visualização de normalidade ")
-                    plt.axvline(0, color='red', linestyle='dashed', linewidth=1)  # Linha central em 0
-                    #sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
+                    sns.kdeplot(data=data, x='zscore', fill=True, alpha=0.3)
+                    ax.set_title("Curva de KDE do Z-score (por tratamento)")
+                    ax.axvline(0, color='red', linestyle='dashed', linewidth=1)
                     st.pyplot(fig2)
-
-
-                    # Plotar o boxplot dos z-scores
+                    
+                    # Boxplot
                     fig, ax = plt.subplots()
-                    sns.boxplot(x=zscore, ax=ax)
-                    sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
-                    ax.set_title("Boxplot dos Z-Scores")
+                    sns.boxplot(data=data, x='zscore', y=categorica, ax=ax)
+                    sns.stripplot(data=data, x='zscore', y=categorica,
+                                  color='black', jitter=True, alpha=0.5, ax=ax)
+                    ax.set_title("Boxplot do Z-score por tratamento")
                     st.pyplot(fig)
-
-
-
-                    #cálculo de outliers:
-                    st.subheader('Outlier ')
-                    st.write('O cálculo de outlier consiste em identificar os dados que estão acima ou abaixo  de 3 desvios padrão do Z-score e utiliza-se o método do IQR')
-
-
-                    Q1 = data.loc[:, continua].quantile(0.25)
-                    Q3 = data.loc[:, continua].quantile(0.75)
-                    # print(Q1)
-                    # print(Q3)
-
-                    IQR = Q3 - Q1
-                    LS = Q3 + 1.5 * IQR
-                    LI = Q1 - 1.5 * IQR
-                    print()
-                    linha = 70 * '='
-                    print(linha)
-
-                    print(linha)
-
-
-                    #Outliers acima e abaixo:
-                    st.write('Limite superior = ', LS)
-                    acima = data[(data.loc[:, continua ] > LS)]
-                    if acima.empty : # Usa-se empty, porque estamos tratando de um dataframe
-                        st.write('Você não tem outliers acima do limite superior  ')
-                        st.write(acima)
+                    
+                    # ============================================================
+                    # OUTLIERS (IQR POR TRATAMENTO)
+                    # ============================================================
+                    st.subheader('Outliers (IQR por tratamento)')
+                    
+                    st.write(
+                        'Os outliers são identificados **dentro de cada tratamento**, '
+                        'utilizando o método do Intervalo Interquartil (1.5 × IQR).'
+                    )
+                    
+                    def limites_iqr(x):
+                        Q1 = x.quantile(0.25)
+                        Q3 = x.quantile(0.75)
+                        IQR = Q3 - Q1
+                        return pd.Series({
+                            'LI': Q1 - 1.5 * IQR,
+                            'LS': Q3 + 1.5 * IQR
+                        })
+                    
+                    # Calcula limites por tratamento
+                    limites = (
+                        data
+                        .groupby(categorica)[continua]
+                        .apply(limites_iqr)
+                        .reset_index()
+                    )
+                    
+                    # Junta com os dados
+                    data_iqr = data.merge(limites, on=categorica)
+                    
+                    # Marca outliers
+                    data_iqr['outlier'] = (
+                        (data_iqr[continua] < data_iqr['LI']) |
+                        (data_iqr[continua] > data_iqr['LS'])
+                    )
+                    
+                    st.write('Limites de outliers por tratamento')
+                    st.dataframe(limites)
+                    
+                    outliers = data_iqr[data_iqr['outlier']]
+                    
+                    if outliers.empty:
+                        st.success('Nenhum outlier identificado dentro dos tratamentos.')
                     else:
-                        st.write('Você tem alguns outliers acima do limite superior')
-                        st.write(acima)
-
-
-
-
-
-
-
-
-                    st.write("limite inferior = ", LI)
-                    abaixo = data[(data.loc[:, continua] < LI)]
-                    if abaixo.empty : # Usa-se empty, porque estamos tratando de um dataframe
-                        st.write('Você não tem outliers abaixo do limite inferior  ')
-                        st.write(abaixo)
-                    else:
-                        st.write('Você tem alguns outliers abaixo  do limite inferior')
-                        st.write(abaixo)
-
-                    escolha_3 = st.radio("Você deseja retirar os outliers ?", ["SIM", "Não "], horizontal=True)
+                        st.warning('Outliers identificados por tratamento:')
+                        st.dataframe(outliers)
+                    
+                    # ============================================================
+                    # DECISÃO DO USUÁRIO (ETAPA FUNDAMENTAL)
+                    # ============================================================
+                    escolha_3 = st.radio(
+                        "Você deseja retirar os outliers?",
+                        ["SIM", "Não"],
+                        horizontal=True
+                    )
+                    
                     if escolha_3 == 'SIM':
-                        data = data[(data[continua] < LS) & (data[continua]>LI)]
-                        st.success('os outliers foram tirados com sucesso ')
-                        escolha_4 = st.radio("Você gostaria de ver os dados sem outliers?", ['Sim', 'Não'])
+                        data = (
+                            data_iqr
+                            .loc[~data_iqr['outlier']]
+                            .drop(columns=['LI', 'LS', 'outlier'])
+                        )
+                    
+                        st.success('Os outliers foram removidos com sucesso.')
+                    
+                        escolha_4 = st.radio(
+                            "Você gostaria de ver os dados sem outliers?",
+                            ['Sim', 'Não']
+                        )
+                    
                         if escolha_4 == 'Sim':
-                            st.write('Seus dados sem outliers')
                             st.dataframe(data)
-                        escolha_5 = st.radio('Você deseja ver os gráficos boxplot e KDE', ['Sim', 'Não'], horizontal=True)
+                    
+                        escolha_5 = st.radio(
+                            'Você deseja ver novamente os gráficos de Z-score?',
+                            ['Sim', 'Não'],
+                            horizontal=True
+                        )
+                    
                         if escolha_5 == 'Sim':
-                            st.subheader('Z-score ')
-                            zscore = (data[continua] - np.mean(data[continua])) / np.std(data[continua])
-                            data['zscore'] = zscore
-
-                            # plotar a curva de KDE
+                            st.subheader('Z-score (dados sem outliers)')
+                    
+                            data['zscore'] = (
+                                data
+                                .groupby(categorica)[continua]
+                                .transform(lambda x: (x - x.mean()) / x.std())
+                            )
+                    
                             fig2, ax = plt.subplots()
                             sns.kdeplot(data=data, x='zscore', fill=True, alpha=0.3)
-                            ax.set_title("Curva de KDE para visualização de normalidade ")
-                            plt.axvline(0, color='red', linestyle='dashed', linewidth=1)  # Linha central em 0
-                            # sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
+                            ax.axvline(0, linestyle='--')
+                            ax.set_title("Curva KDE do Z-score (sem outliers)")
                             st.pyplot(fig2)
-
-                            st.dataframe(data)
-                            # Plotar o boxplot dos z-scores
+                    
                             fig, ax = plt.subplots()
-                            sns.boxplot(x=zscore, ax=ax)
-                            sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
-                            ax.set_title("Boxplot dos Z-Scores")
+                            sns.boxplot(data=data, x='zscore', y=categorica, ax=ax)
+                            sns.stripplot(data=data, x='zscore', y=categorica,
+                                          color='black', alpha=0.5, ax=ax)
+                            ax.set_title("Boxplot do Z-score (sem outliers)")
                             st.pyplot(fig)
-
-
-                    st.write('Análise descritiva dos seus dados ')
+                    
+                    else:
+                        st.info('Os outliers foram mantidos conforme decisão do usuário.')
+                    
+                    # ============================================================
+                    # ANÁLISE DESCRITIVA FINAL (DEPENDE DA ESCOLHA)
+                    # ============================================================
+                    st.write('Análise descritiva dos seus dados')
+                    
                     data_grouped = data.groupby(categorica)[continua].describe()
                     st.dataframe(data_grouped)
-                    cv = data.loc[:, continua].values  # transforma em array numpy  e pega os valores, para o cálculo
-                    # st.write(cv)
-                    # cálculo do cv
+                    
+                    cv = data[continua].values
                     cv2 = np.std(cv) / np.mean(cv) * 100
-                    st.write(f"CV% = {cv2}")
-                    st.warning('Se quiser continuar a análise, então clica na aba 2 acima **Pressupostos da Anova**')
+                    st.write(f"CV% = {cv2:.2f}")
+                    
+                    st.warning(
+                        'Se quiser continuar a análise, clique na aba 2 acima '
+                        '**Pressupostos da ANOVA**'
+                    )
 
 
-
-
-
-
+                #aqui
                 with tab2:
                     st.header('Análise exploratória')
                     st.subheader('Gráfico boxplot')
