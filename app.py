@@ -1347,15 +1347,16 @@ with tab1:
                 else:
                     st.write('Você tem alguns outliers abaixo  do limite inferior')
                     st.write(abaixo)
-
+                #decisão outlier
                 escolha_3 = st.radio("Você deseja retirar os outliers ?", ["SIM", "Não "], horizontal=True)
                 if escolha_3 == 'SIM':
                     data = data[(data[continua] < LS) & (data[continua] > LI)]
                     st.success('os outliers foram tirados com sucesso ')
-                    escolha_4 = st.radio("Você gostaria de ver os dados sem outliers?", ['Sim', 'Não'])
-                    if escolha_4 == 'Sim':
-                        st.write('Seus dados sem outliers')
-                        st.dataframe(data)
+                    st.write('Seus dados sem outliers')
+                    st.dataframe(data)
+                else:
+                    st.warning('Não foram retirados outliers')
+                        
                     escolha_5 = st.radio('Você deseja ver os gráficos boxplot e KDE', ['Sim', 'Não'], horizontal=True)
                     if escolha_5 == 'Sim':
                         st.subheader('Z-score ')
