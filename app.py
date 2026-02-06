@@ -2115,10 +2115,10 @@ with tab1:
                                                                 
 
 
-                                                            else:
-                                                                st.warning(f'O valor de p para o fator {categorica_2} não foi significativo')
-                                                                st.warning(p_value2)
-                                                                st.warning('Não prossegue a análise de contraste')
+                                                        else:
+                                                            st.warning(f'O valor de p para o fator {categorica_2} não foi significativo')
+                                                            st.warning(p_value2)
+                                                            st.warning('Não prossegue a análise de contraste')
 
         escolhas = []
         if variavel == 3:
