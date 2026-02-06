@@ -1357,209 +1357,373 @@ with tab1:
                 else:
                     st.warning('Não foram retirados outliers')
                         
-                    escolha_5 = st.radio('Você deseja ver os gráficos boxplot e KDE', ['Sim', 'Não'], horizontal=True)
-                    if escolha_5 == 'Sim':
-                        st.subheader('Z-score ')
-                        zscore = (data[continua] - np.mean(data[continua])) / np.std(data[continua])
-                        data['zscore'] = zscore
+                escolha_5 = st.radio('Você deseja ver os gráficos boxplot e KDE', ['Sim', 'Não'], horizontal=True)
+                if escolha_5 == 'Sim':
+                    st.subheader('Z-score ')
+                    zscore = (data[continua] - np.mean(data[continua])) / np.std(data[continua])
+                    data['zscore'] = zscore
 
-                        # plotar a curva de KDE
-                        fig2, ax = plt.subplots()
-                        sns.kdeplot(data= data, x='zscore', fill=True, alpha=0.3)
-                        ax.set_title("Curva de KDE para visualização de normalidade ")
-                        plt.axvline(0, color='red', linestyle='dashed', linewidth=1)  # Linha central em 0
-                        # sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
-                        st.pyplot(fig2)
+                    # plotar a curva de KDE
+                    fig2, ax = plt.subplots()
+                    sns.kdeplot(data= data, x='zscore', fill=True, alpha=0.3)
+                    ax.set_title("Curva de KDE para visualização de normalidade ")
+                    plt.axvline(0, color='red', linestyle='dashed', linewidth=1)  # Linha central em 0
+                    # sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
+                    st.pyplot(fig2)
 
-                        st.dataframe(data)
-                        # Plotar o boxplot dos z-scores
-                        fig, ax = plt.subplots()
-                        sns.boxplot(x=zscore, ax=ax)
-                        sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
-                        ax.set_title("Boxplot dos Z-Scores")
-                        st.pyplot(fig)
+                    st.dataframe(data)
+                    # Plotar o boxplot dos z-scores
+                    fig, ax = plt.subplots()
+                    sns.boxplot(x=zscore, ax=ax)
+                    sns.stripplot(x=zscore, color='black', jitter=True, alpha=0.5, ax=ax)
+                    ax.set_title("Boxplot dos Z-Scores")
+                    st.pyplot(fig)
 
-                        st.write('Análise descritiva dos seus dados ')
-                        data_grouped = data.groupby(data.columns[0:variavel].tolist()).describe()
-                        st.dataframe(data_grouped)
-                        cv = data.loc[:, continua].values  # transforma em array numpy  e pega os valores, para o cálculo
-                        # st.write(cv)
-                        # cálculo do cv
-                        cv2 = np.std(cv) / np.mean(cv) * 100
-                        st.write(f"CV% = {cv2}")
+                    st.write('Análise descritiva dos seus dados ')
+                    data_grouped = data.groupby(data.columns[0:variavel].tolist()).describe()
+                    st.dataframe(data_grouped)
+                    cv = data.loc[:, continua].values  # transforma em array numpy  e pega os valores, para o cálculo
+                    # st.write(cv)
+                    # cálculo do cv
+                    cv2 = np.std(cv) / np.mean(cv) * 100
+                    st.write(f"CV% = {cv2}")
 
-                        with tab2:
-                            st.header('Análise exploratória')
-                            st.subheader('Gráfico boxplot')
-
-
-                            Eixo_y = data.columns[2]
-                            print(Eixo_y)
-                            Axis_x = data.columns[0]
-
-                            dentro_1 = data.columns[1]
-                            #colocando gráfico um ao lado do outro
-                            col1, col2 = st.columns(2)
-
-                            with col1:
-                                fig, ax = plt.subplots(figsize=(10, 6))
-                                sns.boxplot(x=Axis_x, y=Eixo_y, hue=dentro_1, palette="Set2", data=data, ax=ax)
-                                sns.despine(offset=10, trim=True)
-                                st.pyplot(fig)
-
-                            with col2:
-
-                                st.subheader('Gráfico de barras')
-                                fig3, ax = plt.subplots(figsize=(10, 6))
-                                sns.barplot(x=Axis_x, y=Eixo_y, hue=dentro_1, palette="Set2",errorbar = 'sd', width = 0.5, data=data, ax=ax)
-                                plt.ylim(0)
-                                #sns.despine(offset=10, trim=True)
-                                st.pyplot(fig3)
+                    with tab2:
+                        st.header('Análise exploratória')
+                        st.subheader('Gráfico boxplot')
 
 
+                        Eixo_y = data.columns[2]
+                        print(Eixo_y)
+                        Axis_x = data.columns[0]
 
-                            escolha_6 = st.radio('Você gostaria de alterar o gráfico ?', ['Sim', 'Não '])
-                            if escolha_6 ==  'Não ':
-                                st.warning('Escolha sim para prosseguir com  a análise dos fatores ')
+                        dentro_1 = data.columns[1]
+                        #colocando gráfico um ao lado do outro
+                        col1, col2 = st.columns(2)
 
-                            else:
+                        with col1:
+                            fig, ax = plt.subplots(figsize=(10, 6))
+                            sns.boxplot(x=Axis_x, y=Eixo_y, hue=dentro_1, palette="Set2", data=data, ax=ax)
+                            sns.despine(offset=10, trim=True)
+                            st.pyplot(fig)
 
-                                escolha_7 = st.radio( f"Você gostaria de alterar o nível da variável categórica: {categorica}?",['Sim', 'Não'])
-                                if escolha_7 == 'Sim':
-                                    data_grouped = data[categorica].unique()
-                                    lista = list(data_grouped)
-                                    tamanho = len(lista)
-                                    ordem_desejada = []
-                                    for k in range(tamanho):
-                                        selecionado = st.selectbox(f'Escolha a ordem do nível {1 + k} ',
-                                                                   ['Selecione'] + lista,
-                                                                   key=f'ordem1_{20 + k}')
-                                        ordem_desejada.append(selecionado)
+                        with col2:
 
-                                        # Verifica se todos os níveis foram selecionados corretamente
-                                        if 'Selecione' not in ordem_desejada and len(set(ordem_desejada)) == len(lista):
+                            st.subheader('Gráfico de barras')
+                            fig3, ax = plt.subplots(figsize=(10, 6))
+                            sns.barplot(x=Axis_x, y=Eixo_y, hue=dentro_1, palette="Set2",errorbar = 'sd', width = 0.5, data=data, ax=ax)
+                            plt.ylim(0)
+                            #sns.despine(offset=10, trim=True)
+                            st.pyplot(fig3)
 
 
+
+                        escolha_6 = st.radio('Você gostaria de alterar o gráfico ?', ['Sim', 'Não '])
+                        if escolha_6 ==  'Não ':
+                            st.warning('Escolha sim para prosseguir com  a análise dos fatores ')
+
+                        else:
+
+                            escolha_7 = st.radio( f"Você gostaria de alterar o nível da variável categórica: {categorica}?",['Sim', 'Não'])
+                            if escolha_7 == 'Sim':
+                                data_grouped = data[categorica].unique()
+                                lista = list(data_grouped)
+                                tamanho = len(lista)
+                                ordem_desejada = []
+                                for k in range(tamanho):
+                                    selecionado = st.selectbox(f'Escolha a ordem do nível {1 + k} ',
+                                                               ['Selecione'] + lista,
+                                                               key=f'ordem1_{20 + k}')
+                                    ordem_desejada.append(selecionado)
+
+                                    # Verifica se todos os níveis foram selecionados corretamente
+                                    if 'Selecione' not in ordem_desejada and len(set(ordem_desejada)) == len(lista):
 
 
 
 
 
 
-                                            escolha_8 = st.radio(f"Você gostaria de alterar os níveis da variável categórica:{categorica_2}", ['Sim', 'Não'])
-                                            if escolha_8 ==  'Sim':
-                                                data_grouped = data[categorica_2].unique()
-
-                                                lista = list(data_grouped)
-                                                tamanho = len(lista)
-
-                                                ordem_desejada2 = []
-                                                for k in range(tamanho):
-                                                    selecionado = st.selectbox(f'Escolha a ordem do nível {1 + k} ',
-                                                                               ['Selecione'] + lista,
-                                                                               key=f'ordem2_{30 + k}')
-                                                    ordem_desejada2.append(selecionado)
-
-                                                    # Verifica se todos os níveis foram selecionados corretamente
-
-                                                if 'Selecione' not in ordem_desejada and len(set(ordem_desejada2)) == len(lista):
-
-                                                    #cores:
-                                                    options = ["Blues", "BuGn", "Set1", "Set2", "Set3", "viridis",
-                                                               "magma", "Pastel1", "Pastel2", "colorblind", "Accent",
-                                                               "tab10", "tab20", "tab20b", 'tab20c', "Paired"]
-
-                                                    cor_padrão = "Set2"
-                                                    cores = st.selectbox('Escolha a cor de interesse:',
-                                                                         ['Cores'] + options, index=0)
-                                                    st.success(f"Você escolheu: {cores}.")
-                                                    if cores == 'Cores':
-                                                        cores = cor_padrão
-
-                                                    #Criar um slider somente para valores máximos:
-                                                    max_valor = data[continua].max()
-                                                    valor_inicial = max_valor  # arredonda para o próximo inteiro
 
 
-                                                    ymax = st.number_input(
-                                                        label="Valor máximo do eixo Y",
-                                                        min_value=0.00000,
-                                                        max_value=1000000.00,
-                                                        value=float(valor_inicial),
-                                                        step=0.01
-                                                    )
+                                        escolha_8 = st.radio(f"Você gostaria de alterar os níveis da variável categórica:{categorica_2}", ['Sim', 'Não'])
+                                        if escolha_8 ==  'Sim':
+                                            data_grouped = data[categorica_2].unique()
 
-                                                    nome_eixo_y = st.text_input("Digite o nome que você quer para o eixo Y:",
-                                                                                value=Eixo_y)
-                                                    nome_eixo_x = st.text_input("Digite o nome que você quer para o eixo X:", value = Axis_x)
-                                                    font_opcao = ["serif", "sans-serif", "monospace", "Arial",
-                                                                  "Helvetica", "Verdana", "Tahoma", "Calibri",
-                                                                  "DejaVu Sans", "Geneva", "Roboto", "Times New Roman",
-                                                                  "Georgia", "Garamond", "Cambria", "DejaVu Serif",
-                                                                  "Computer Modern"]
+                                            lista = list(data_grouped)
+                                            tamanho = len(lista)
 
-                                                    font2 = st.selectbox('Escolha a fonte dos eixos e rótulos',
-                                                                         font_opcao, key='88')
+                                            ordem_desejada2 = []
+                                            for k in range(tamanho):
+                                                selecionado = st.selectbox(f'Escolha a ordem do nível {1 + k} ',
+                                                                           ['Selecione'] + lista,
+                                                                           key=f'ordem2_{30 + k}')
+                                                ordem_desejada2.append(selecionado)
 
-                                                    with st.spinner("Por favor, aguarde..."):
-                                                        st.subheader(f"Gráfico de interação  {categorica} e {categorica_2}")
+                                                # Verifica se todos os níveis foram selecionados corretamente
 
+                                            if 'Selecione' not in ordem_desejada and len(set(ordem_desejada2)) == len(lista):
 
-                                                        #grráfico de barras e download
-                                                        st.subheader(f'Gráfico de barras interação {categorica} e {categorica_2}')
-                                                        fig2, ax = plt.subplots(figsize=(14, 8))
-                                                        sns.barplot(x=Axis_x, y=Eixo_y, hue=dentro_1, order=ordem_desejada,
-                                                                    hue_order=ordem_desejada2, palette= cores,linewidth = 1, edgecolor = 'black', data=data,width = 0.5,  ax=ax,
-                                                                    errorbar='sd')
+                                                #cores:
+                                                options = ["Blues", "BuGn", "Set1", "Set2", "Set3", "viridis",
+                                                           "magma", "Pastel1", "Pastel2", "colorblind", "Accent",
+                                                           "tab10", "tab20", "tab20b", 'tab20c', "Paired"]
 
-                                                        ax.set_ylim(0, ymax)#ax.spines['left'].set_linewidth(3)
-                                                        cor = 'black'
-                                                        tom = 'bold'
-                                                        ax.spines['left'].set_linewidth(1)
-                                                        ax.spines['left'].set_color(cor)
-                                                        ax.tick_params(axis = 'y', labelsize = 17, colors = cor )
-                                                        #ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
+                                                cor_padrão = "Set2"
+                                                cores = st.selectbox('Escolha a cor de interesse:',
+                                                                     ['Cores'] + options, index=0)
+                                                st.success(f"Você escolheu: {cores}.")
+                                                if cores == 'Cores':
+                                                    cores = cor_padrão
+
+                                                #Criar um slider somente para valores máximos:
+                                                max_valor = data[continua].max()
+                                                valor_inicial = max_valor  # arredonda para o próximo inteiro
 
 
-                                                        ax.set_xticklabels(ax.get_xticklabels(), fontsize=18, fontweight='bold', fontfamily = font2)
-                                                        ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold', family = font2)
-                                                        ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold', family = font2)
-                                                        plt.legend(title = categorica_2, frameon=False, prop={'weight': 'bold','size': 15,'family': font2},title_fontproperties={'weight': 'bold','size': 16,'family': font2})
-                                                        plt.ylim(0)
-                                                        st.pyplot(fig2)
+                                                ymax = st.number_input(
+                                                    label="Valor máximo do eixo Y",
+                                                    min_value=0.00000,
+                                                    max_value=1000000.00,
+                                                    value=float(valor_inicial),
+                                                    step=0.01
+                                                )
 
-                                                        # Salvar a figura em um arquivo PNG
-                                                        fig2.savefig(f"Gráfico de interação barras {categorica} e {categorica_2}.png", dpi=300,
-                                                                    bbox_inches='tight')  # Salva a figura como .png
+                                                nome_eixo_y = st.text_input("Digite o nome que você quer para o eixo Y:",
+                                                                            value=Eixo_y)
+                                                nome_eixo_x = st.text_input("Digite o nome que você quer para o eixo X:", value = Axis_x)
+                                                font_opcao = ["serif", "sans-serif", "monospace", "Arial",
+                                                              "Helvetica", "Verdana", "Tahoma", "Calibri",
+                                                              "DejaVu Sans", "Geneva", "Roboto", "Times New Roman",
+                                                              "Georgia", "Garamond", "Cambria", "DejaVu Serif",
+                                                              "Computer Modern"]
 
-                                                        # Cria um botão para download
-                                                        with open(f"Gráfico de interação barras {categorica} e {categorica_2}.png", "rb") as f:
-                                                            st.download_button(
-                                                                label="Baixar o gráfico",  # Nome do botão
-                                                                data=f,  # Dados do arquivo
-                                                                file_name=f"Gráfico de interação barras {categorica} e {categorica_2}.png",
-                                                                # Nome do arquivo a ser baixado
-                                                                mime="image/png"  # Tipo MIME do arquivo
+                                                font2 = st.selectbox('Escolha a fonte dos eixos e rótulos',
+                                                                     font_opcao, key='88')
 
-                                                            )
-                                                        data_grouped = data.groupby([categorica, categorica_2])[
-                                                            continua].describe().reset_index()
-                                                        st.subheader(
-                                                            f'Análise das médias para a interação dos fatores  {categorica} e {categorica_2}')
-                                                        st.dataframe(data_grouped)
+                                                with st.spinner("Por favor, aguarde..."):
+                                                    st.subheader(f"Gráfico de interação  {categorica} e {categorica_2}")
 
 
-                                                    escolha_10 = st.radio('Você gostaria de ver os gráfico sem interação?',['Sim', 'Não'])
-                                                    if escolha_10 == 'Sim':
-                                                        st.subheader(f'Gráfico {categorica_2} ')
+                                                    #grráfico de barras e download
+                                                    st.subheader(f'Gráfico de barras interação {categorica} e {categorica_2}')
+                                                    fig2, ax = plt.subplots(figsize=(14, 8))
+                                                    sns.barplot(x=Axis_x, y=Eixo_y, hue=dentro_1, order=ordem_desejada,
+                                                                hue_order=ordem_desejada2, palette= cores,linewidth = 1, edgecolor = 'black', data=data,width = 0.5,  ax=ax,
+                                                                errorbar='sd')
+
+                                                    ax.set_ylim(0, ymax)#ax.spines['left'].set_linewidth(3)
+                                                    cor = 'black'
+                                                    tom = 'bold'
+                                                    ax.spines['left'].set_linewidth(1)
+                                                    ax.spines['left'].set_color(cor)
+                                                    ax.tick_params(axis = 'y', labelsize = 17, colors = cor )
+                                                    #ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
 
 
-                                                        #gráfico de barras:
-                                                        st.subheader(f'Gráfico {categorica_2} ')
-                                                        fig8, ax = plt.subplots(figsize=(14, 8))
-                                                        sns.barplot (y=Eixo_y, hue=dentro_1,
-                                                                    hue_order=ordem_desejada2, palette=cores, linewidth = 1, edgecolor = 'black',width = 0.4, data=data, ax=ax)
-                                                        ax.set_ylabel(nome_eixo_y, fontsize=14, weight='bold')
+                                                    ax.set_xticklabels(ax.get_xticklabels(), fontsize=18, fontweight='bold', fontfamily = font2)
+                                                    ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold', family = font2)
+                                                    ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold', family = font2)
+                                                    plt.legend(title = categorica_2, frameon=False, prop={'weight': 'bold','size': 15,'family': font2},title_fontproperties={'weight': 'bold','size': 16,'family': font2})
+                                                    plt.ylim(0)
+                                                    st.pyplot(fig2)
+
+                                                    # Salvar a figura em um arquivo PNG
+                                                    fig2.savefig(f"Gráfico de interação barras {categorica} e {categorica_2}.png", dpi=300,
+                                                                bbox_inches='tight')  # Salva a figura como .png
+
+                                                    # Cria um botão para download
+                                                    with open(f"Gráfico de interação barras {categorica} e {categorica_2}.png", "rb") as f:
+                                                        st.download_button(
+                                                            label="Baixar o gráfico",  # Nome do botão
+                                                            data=f,  # Dados do arquivo
+                                                            file_name=f"Gráfico de interação barras {categorica} e {categorica_2}.png",
+                                                            # Nome do arquivo a ser baixado
+                                                            mime="image/png"  # Tipo MIME do arquivo
+
+                                                        )
+                                                    data_grouped = data.groupby([categorica, categorica_2])[
+                                                        continua].describe().reset_index()
+                                                    st.subheader(
+                                                        f'Análise das médias para a interação dos fatores  {categorica} e {categorica_2}')
+                                                    st.dataframe(data_grouped)
+
+
+                                                escolha_10 = st.radio('Você gostaria de ver os gráfico sem interação?',['Sim', 'Não'])
+                                                if escolha_10 == 'Sim':
+                                                    st.subheader(f'Gráfico {categorica_2} ')
+
+
+                                                    #gráfico de barras:
+                                                    st.subheader(f'Gráfico {categorica_2} ')
+                                                    fig8, ax = plt.subplots(figsize=(14, 8))
+                                                    sns.barplot (y=Eixo_y, hue=dentro_1,
+                                                                hue_order=ordem_desejada2, palette=cores, linewidth = 1, edgecolor = 'black',width = 0.4, data=data, ax=ax)
+                                                    ax.set_ylabel(nome_eixo_y, fontsize=14, weight='bold')
+                                                    ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
+                                                    cor = 'black'
+                                                    tom = 'bold'
+                                                    ax.spines['left'].set_linewidth(1)
+                                                    ax.spines['left'].set_color(cor)
+                                                    ax.tick_params(axis='y', labelsize=17, colors=cor)
+                                                    # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
+
+                                                    ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
+                                                                       fontweight='bold', fontfamily=font2)
+                                                    ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
+                                                                  family=font2)
+                                                    ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
+                                                                  family=font2)
+
+                                                    plt.ylim(0)
+                                                    st.pyplot(fig8)
+
+                                                    fig8.savefig(f"Gráfico de barras {categorica_2}.png", dpi=300,
+                                                                bbox_inches='tight')  # Sem espaço antes de .png
+
+                                                    with open(f"Gráfico de barras {categorica_2}.png", "rb") as f:
+                                                        st.download_button(
+                                                            label="Baixar o gráfico",
+                                                            data=f,
+                                                            file_name=f"Gráfico de barras {categorica_2}.png",
+                                                            mime="image/png"
+
+                                                        )
+
+                                                        data_grouped2 = data.groupby(categorica_2)[continua].describe().reset_index()
+
+                                                        st.subheader(f'Análise das médias para o fator {categorica_2}')
+                                                        st.dataframe(data_grouped2)
+
+
+
+
+
+
+                                                    st.subheader(f"Gráfico {categorica}")
+
+
+
+                                                    #gráfico de barras:
+
+                                                    st.subheader(f"Gráfico de barras {categorica}")
+
+                                                    fig11, ax = plt.subplots(figsize=(14, 8))
+                                                    sns.barplot(x=Axis_x, y=Eixo_y, order=ordem_desejada,
+                                                                palette=cores,linewidth = 1, edgecolor = 'black',width = 0.4, data=data, ax=ax)
+                                                    ax.set_ylabel(nome_eixo_y, fontsize=14, weight='bold')
+                                                    ax.set_xlabel(nome_eixo_x, fontsize=14, weight='bold')
+                                                    ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
+                                                    cor = 'black'
+                                                    tom = 'bold'
+                                                    ax.spines['left'].set_linewidth(1)
+                                                    ax.spines['left'].set_color(cor)
+                                                    ax.tick_params(axis='y', labelsize=17, colors=cor)
+                                                    # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
+
+                                                    ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
+                                                                       fontweight='bold', fontfamily=font2)
+                                                    ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
+                                                                  family=font2)
+                                                    ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
+                                                                  family=font2)
+
+                                                    plt.ylim(0)
+                                                    st.pyplot(fig11)
+
+
+                                                    # Salvar a figura com nome seguro
+                                                    fig11.savefig(f"Gráfico barras2 {categorica}.png", dpi=300, bbox_inches='tight')
+
+                                                    # Botão de download
+                                                    with open(f"Gráfico barras2 {categorica}.png", "rb") as f:
+                                                        st.download_button(
+                                                            label="Baixar o gráfico",
+                                                            data=f,
+                                                            file_name=f"Gráfico barras2 {categorica}.png",
+                                                            mime="image/png"
+                                                        )
+
+                                                    data_grouped1 = data.groupby(categorica)[continua].describe().reset_index()
+
+                                                    st.subheader(f'Análise das médias para o fator {categorica}')
+                                                    st.dataframe(data_grouped1)
+                                                    anova_data = st.radio('Você quer prosseguir o gráfico boxplot?',
+                                                                          ['Sim', 'Não'], horizontal = True)
+
+                                                    if anova_data == 'Sim':
+
+
+                                                        # cores:
+                                                        options = ["Blues", "BuGn", "Set1", "Set2", "Set3",
+                                                                   "viridis",
+                                                                   "magma", "Pastel1", "Pastel2", "colorblind",
+                                                                   "Accent",
+                                                                   "tab10", "tab20", "tab20b", 'tab20c',
+                                                                   "Paired"]
+
+                                                        cor_padrão = "Set2"
+                                                        cores = st.selectbox('Escolha a cor de interesse:',
+                                                                             ['Cores'] + options, index=1)
+                                                        st.success(f"Você escolheu: {cores}.")
+                                                        if cores == 'Cores':
+                                                            cores = cor_padrão
+
+                                                        # Criar um slider somente para valores máximos:
+                                                        max_valor = data[continua].max()
+                                                        valor_inicial = max_valor  # arredonda para o próximo inteiro
+
+                                                        ymax = st.number_input(
+                                                            label="Valor máximo do eixo Y",
+                                                            min_value=0.000000,
+                                                            max_value=1000000.00,
+                                                            value=float(valor_inicial),
+                                                            step=0.01, key = '122'
+                                                        )
+
+                                                        nome_eixo_y = st.text_input(
+                                                            "Digite o nome que você quer para o eixo Y:",
+                                                            value=Eixo_y, key = '123')
+                                                        nome_eixo_x = st.text_input(
+                                                            "Digite o nome que você quer para o eixo X:",
+                                                            value=Axis_x,key = '124')
+                                                        font_opcao = ["serif", "sans-serif", "monospace",
+                                                                      "Arial",
+                                                                      "Helvetica", "Verdana", "Tahoma",
+                                                                      "Calibri",
+                                                                      "DejaVu Sans", "Geneva", "Roboto",
+                                                                      "Times New Roman",
+                                                                      "Georgia", "Garamond", "Cambria",
+                                                                      "DejaVu Serif",
+                                                                      "Computer Modern"]
+
+                                                        font2 = st.selectbox(
+                                                            'Escolha a fonte dos eixos e rótulos',
+                                                            font_opcao, key='102')
+
+                                                        pre1 = ['Sim', 'Não ']
+                                                        prencher = st.selectbox('Você quer tirar  o preenchimento', ['Selecione']+ pre1)
+                                                        if prencher == 'Sim':
+                                                            val_pre = False
+                                                        elif prencher  == 'Não':
+                                                            val_pre = True
+                                                        else:
+                                                            val_pre = True
+
+                                                        gap = st.slider('Escolha o gap entre os boxplots',
+                                                                        min_value=0.0, max_value=1.0, value=0.1,
+                                                                        step=0.01)
+                                                        width = st.slider('Espessura das caixas (width)', 0.2, 0.8,
+                                                                          value=0.5, step=0.05)
+
+
+
+                                                        fig20, ax = plt.subplots(figsize=(14, 8))
+                                                        sns.set_theme(style="white")
+                                                        sns.boxplot(x= Axis_x, y= Eixo_y, hue = dentro_1, order = ordem_desejada,
+                                                                    hue_order = ordem_desejada2, palette = cores,
+                                                                    fill = val_pre ,gap= gap,width = width, data = data )
+
                                                         ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
                                                         cor = 'black'
                                                         tom = 'bold'
@@ -1574,157 +1738,140 @@ with tab1:
                                                                       family=font2)
                                                         ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
                                                                       family=font2)
-
+                                                        plt.legend(title=categorica_2, frameon=False,
+                                                                   prop={'weight': 'bold', 'size': 12,
+                                                                         'family': font2},
+                                                                   title_fontproperties={'weight': 'bold',
+                                                                                         'size': 11,
+                                                                                         'family': font2})
                                                         plt.ylim(0)
-                                                        st.pyplot(fig8)
-
-                                                        fig8.savefig(f"Gráfico de barras {categorica_2}.png", dpi=300,
-                                                                    bbox_inches='tight')  # Sem espaço antes de .png
-
-                                                        with open(f"Gráfico de barras {categorica_2}.png", "rb") as f:
-                                                            st.download_button(
-                                                                label="Baixar o gráfico",
-                                                                data=f,
-                                                                file_name=f"Gráfico de barras {categorica_2}.png",
-                                                                mime="image/png"
-
-                                                            )
-
-                                                            data_grouped2 = data.groupby(categorica_2)[continua].describe().reset_index()
-
-                                                            st.subheader(f'Análise das médias para o fator {categorica_2}')
-                                                            st.dataframe(data_grouped2)
-
-
-
-
-
-
-                                                        st.subheader(f"Gráfico {categorica}")
-
-
-
-                                                        #gráfico de barras:
-
-                                                        st.subheader(f"Gráfico de barras {categorica}")
-
-                                                        fig11, ax = plt.subplots(figsize=(14, 8))
-                                                        sns.barplot(x=Axis_x, y=Eixo_y, order=ordem_desejada,
-                                                                    palette=cores,linewidth = 1, edgecolor = 'black',width = 0.4, data=data, ax=ax)
-                                                        ax.set_ylabel(nome_eixo_y, fontsize=14, weight='bold')
-                                                        ax.set_xlabel(nome_eixo_x, fontsize=14, weight='bold')
-                                                        ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
-                                                        cor = 'black'
-                                                        tom = 'bold'
-                                                        ax.spines['left'].set_linewidth(1)
-                                                        ax.spines['left'].set_color(cor)
-                                                        ax.tick_params(axis='y', labelsize=17, colors=cor)
-                                                        # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
-
-                                                        ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
-                                                                           fontweight='bold', fontfamily=font2)
-                                                        ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
-                                                                      family=font2)
-                                                        ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
-                                                                      family=font2)
-
-                                                        plt.ylim(0)
-                                                        st.pyplot(fig11)
-
+                                                        st.pyplot(fig20)
 
                                                         # Salvar a figura com nome seguro
-                                                        fig11.savefig(f"Gráfico barras2 {categorica}.png", dpi=300, bbox_inches='tight')
+                                                        fig20.savefig(f"Gráfico boxplot {categorica}x{categorica_2}.png", dpi=300,
+                                                                      bbox_inches='tight')
 
                                                         # Botão de download
-                                                        with open(f"Gráfico barras2 {categorica}.png", "rb") as f:
+                                                        with open(f"Gráfico boxplot {categorica}x{categorica_2}.png", "rb") as f:
                                                             st.download_button(
                                                                 label="Baixar o gráfico",
                                                                 data=f,
-                                                                file_name=f"Gráfico barras2 {categorica}.png",
+                                                                file_name=f"Gráfico boxplot {categorica}x{categorica_2}.png",
                                                                 mime="image/png"
                                                             )
 
-                                                        data_grouped1 = data.groupby(categorica)[continua].describe().reset_index()
-
-                                                        st.subheader(f'Análise das médias para o fator {categorica}')
-                                                        st.dataframe(data_grouped1)
-                                                        anova_data = st.radio('Você quer prosseguir o gráfico boxplot?',
-                                                                              ['Sim', 'Não'], horizontal = True)
-
-                                                        if anova_data == 'Sim':
 
 
-                                                            # cores:
-                                                            options = ["Blues", "BuGn", "Set1", "Set2", "Set3",
-                                                                       "viridis",
-                                                                       "magma", "Pastel1", "Pastel2", "colorblind",
-                                                                       "Accent",
-                                                                       "tab10", "tab20", "tab20b", 'tab20c',
-                                                                       "Paired"]
 
-                                                            cor_padrão = "Set2"
-                                                            cores = st.selectbox('Escolha a cor de interesse:',
-                                                                                 ['Cores'] + options, index=1)
-                                                            st.success(f"Você escolheu: {cores}.")
-                                                            if cores == 'Cores':
-                                                                cores = cor_padrão
+                                                        #gráfico das variáveis isoladas:
+                                                        st.subheader(f' Boxplot   {categorica}')
 
-                                                            # Criar um slider somente para valores máximos:
-                                                            max_valor = data[continua].max()
-                                                            valor_inicial = max_valor  # arredonda para o próximo inteiro
+                                                        fig25, ax = plt.subplots(figsize=(14, 8))
+                                                        sns.set_theme(style="white")
+                                                        sns.boxplot(x= Axis_x, y= Eixo_y,  order = ordem_desejada,
+                                                                    palette = cores,
+                                                                    fill = val_pre ,gap= gap,width = width, data = data )
 
-                                                            ymax = st.number_input(
-                                                                label="Valor máximo do eixo Y",
-                                                                min_value=0.000000,
-                                                                max_value=1000000.00,
-                                                                value=float(valor_inicial),
-                                                                step=0.01, key = '122'
+                                                        ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
+                                                        cor = 'black'
+                                                        tom = 'bold'
+                                                        ax.spines['left'].set_linewidth(1)
+                                                        ax.spines['left'].set_color(cor)
+                                                        ax.tick_params(axis='y', labelsize=17, colors=cor)
+                                                        # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
+
+                                                        ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
+                                                                           fontweight='bold', fontfamily=font2)
+                                                        ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
+                                                                      family=font2)
+                                                        ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
+                                                                      family=font2)
+
+                                                        plt.ylim(0)
+                                                        st.pyplot(fig25)
+
+                                                        fig25.savefig(
+                                                            f"Gráfico boxplot {categorica}.png",
+                                                            dpi=300,
+                                                            bbox_inches='tight')
+
+                                                        # Botão de download
+                                                        with open(
+                                                                f"Gráfico boxplot {categorica}.png",
+                                                                "rb") as f:
+                                                            st.download_button(
+                                                                label="Baixar o gráfico",
+                                                                data=f,
+                                                                file_name=f"Gráfico boxplot {categorica}.png",
+                                                                mime="image/png"
                                                             )
 
-                                                            nome_eixo_y = st.text_input(
-                                                                "Digite o nome que você quer para o eixo Y:",
-                                                                value=Eixo_y, key = '123')
-                                                            nome_eixo_x = st.text_input(
-                                                                "Digite o nome que você quer para o eixo X:",
-                                                                value=Axis_x,key = '124')
-                                                            font_opcao = ["serif", "sans-serif", "monospace",
-                                                                          "Arial",
-                                                                          "Helvetica", "Verdana", "Tahoma",
-                                                                          "Calibri",
-                                                                          "DejaVu Sans", "Geneva", "Roboto",
-                                                                          "Times New Roman",
-                                                                          "Georgia", "Garamond", "Cambria",
-                                                                          "DejaVu Serif",
-                                                                          "Computer Modern"]
 
-                                                            font2 = st.selectbox(
-                                                                'Escolha a fonte dos eixos e rótulos',
-                                                                font_opcao, key='102')
+                                                        #Gráfico das variáveis isoladas:
 
+                                                        # gráfico das variáveis isoladas:
+                                                        st.subheader(f' Boxplot  {categorica_2}')
+
+                                                        fig260, ax = plt.subplots(figsize=(14, 8))
+                                                        sns.set_theme(style="white")
+                                                        sns.boxplot(x=dentro_1, y=Eixo_y,
+                                                                    order= ordem_desejada2,
+                                                                     palette=cores,
+                                                                    fill=val_pre, gap=gap, width=width, data=data)
+
+                                                        ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
+                                                        cor = 'black'
+                                                        tom = 'bold'
+                                                        ax.spines['left'].set_linewidth(1)
+                                                        ax.spines['left'].set_color(cor)
+                                                        ax.tick_params(axis='y', labelsize=17, colors=cor)
+                                                        # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
+
+                                                        ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
+                                                                           fontweight='bold', fontfamily=font2)
+                                                        ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
+                                                                      family=font2)
+                                                        ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
+                                                                      family=font2)
+
+                                                        plt.ylim(0)
+                                                        st.pyplot(fig260)
+                                                        fig260.savefig(
+                                                            f"Gráfico boxplot {categorica_2}.png",
+                                                            dpi=300,
+                                                            bbox_inches='tight')
+
+                                                        # Botão de download
+                                                        with open(
+                                                                f"Gráfico boxplot {categorica_2}.png",
+                                                                "rb") as f:
+                                                            st.download_button(
+                                                                label="Baixar o gráfico",
+                                                                data=f,
+                                                                file_name=f"Gráfico boxplot {categorica_2}.png",
+                                                                mime="image/png"
+                                                            )
+
+                                                        pontos = st.radio('Você deseja ver  o violinoplot??', ['Sim', 'Não'])
+                                                        if pontos == 'Sim':
                                                             pre1 = ['Sim', 'Não ']
-                                                            prencher = st.selectbox('Você quer tirar  o preenchimento', ['Selecione']+ pre1)
+                                                            prencher = st.selectbox(
+                                                                'Você quer tirar  o preenchimento',
+                                                                ['Selecione'] + pre1, key = 'p_99')
                                                             if prencher == 'Sim':
                                                                 val_pre = False
-                                                            elif prencher  == 'Não':
+                                                            elif prencher == 'Não':
                                                                 val_pre = True
                                                             else:
                                                                 val_pre = True
 
-                                                            gap = st.slider('Escolha o gap entre os boxplots',
-                                                                            min_value=0.0, max_value=1.0, value=0.1,
-                                                                            step=0.01)
-                                                            width = st.slider('Espessura das caixas (width)', 0.2, 0.8,
-                                                                              value=0.5, step=0.05)
+                                                            fig21, ax = plt.subplots(figsize=(14, 8))
+
+                                                            sns.violinplot(x=Axis_x, y= Eixo_y, hue = dentro_1, width=0.3, data = data, fill = val_pre)
 
 
-
-                                                            fig20, ax = plt.subplots(figsize=(14, 8))
-                                                            sns.set_theme(style="white")
-                                                            sns.boxplot(x= Axis_x, y= Eixo_y, hue = dentro_1, order = ordem_desejada,
-                                                                        hue_order = ordem_desejada2, palette = cores,
-                                                                        fill = val_pre ,gap= gap,width = width, data = data )
-
-                                                            ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
+                                                            ax.set_ylim(0,
+                                                                        ymax)  # ax.spines['left'].set_linewidth(3)
                                                             cor = 'black'
                                                             tom = 'bold'
                                                             ax.spines['left'].set_linewidth(1)
@@ -1745,154 +1892,7 @@ with tab1:
                                                                                              'size': 11,
                                                                                              'family': font2})
                                                             plt.ylim(0)
-                                                            st.pyplot(fig20)
-
-                                                            # Salvar a figura com nome seguro
-                                                            fig20.savefig(f"Gráfico boxplot {categorica}x{categorica_2}.png", dpi=300,
-                                                                          bbox_inches='tight')
-
-                                                            # Botão de download
-                                                            with open(f"Gráfico boxplot {categorica}x{categorica_2}.png", "rb") as f:
-                                                                st.download_button(
-                                                                    label="Baixar o gráfico",
-                                                                    data=f,
-                                                                    file_name=f"Gráfico boxplot {categorica}x{categorica_2}.png",
-                                                                    mime="image/png"
-                                                                )
-
-
-
-
-                                                            #gráfico das variáveis isoladas:
-                                                            st.subheader(f' Boxplot   {categorica}')
-
-                                                            fig25, ax = plt.subplots(figsize=(14, 8))
-                                                            sns.set_theme(style="white")
-                                                            sns.boxplot(x= Axis_x, y= Eixo_y,  order = ordem_desejada,
-                                                                        palette = cores,
-                                                                        fill = val_pre ,gap= gap,width = width, data = data )
-
-                                                            ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
-                                                            cor = 'black'
-                                                            tom = 'bold'
-                                                            ax.spines['left'].set_linewidth(1)
-                                                            ax.spines['left'].set_color(cor)
-                                                            ax.tick_params(axis='y', labelsize=17, colors=cor)
-                                                            # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
-
-                                                            ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
-                                                                               fontweight='bold', fontfamily=font2)
-                                                            ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
-                                                                          family=font2)
-                                                            ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
-                                                                          family=font2)
-
-                                                            plt.ylim(0)
-                                                            st.pyplot(fig25)
-
-                                                            fig25.savefig(
-                                                                f"Gráfico boxplot {categorica}.png",
-                                                                dpi=300,
-                                                                bbox_inches='tight')
-
-                                                            # Botão de download
-                                                            with open(
-                                                                    f"Gráfico boxplot {categorica}.png",
-                                                                    "rb") as f:
-                                                                st.download_button(
-                                                                    label="Baixar o gráfico",
-                                                                    data=f,
-                                                                    file_name=f"Gráfico boxplot {categorica}.png",
-                                                                    mime="image/png"
-                                                                )
-
-
-                                                            #Gráfico das variáveis isoladas:
-
-                                                            # gráfico das variáveis isoladas:
-                                                            st.subheader(f' Boxplot  {categorica_2}')
-
-                                                            fig260, ax = plt.subplots(figsize=(14, 8))
-                                                            sns.set_theme(style="white")
-                                                            sns.boxplot(x=dentro_1, y=Eixo_y,
-                                                                        order= ordem_desejada2,
-                                                                         palette=cores,
-                                                                        fill=val_pre, gap=gap, width=width, data=data)
-
-                                                            ax.set_ylim(0, ymax)  # ax.spines['left'].set_linewidth(3)
-                                                            cor = 'black'
-                                                            tom = 'bold'
-                                                            ax.spines['left'].set_linewidth(1)
-                                                            ax.spines['left'].set_color(cor)
-                                                            ax.tick_params(axis='y', labelsize=17, colors=cor)
-                                                            # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
-
-                                                            ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
-                                                                               fontweight='bold', fontfamily=font2)
-                                                            ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
-                                                                          family=font2)
-                                                            ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
-                                                                          family=font2)
-
-                                                            plt.ylim(0)
-                                                            st.pyplot(fig260)
-                                                            fig260.savefig(
-                                                                f"Gráfico boxplot {categorica_2}.png",
-                                                                dpi=300,
-                                                                bbox_inches='tight')
-
-                                                            # Botão de download
-                                                            with open(
-                                                                    f"Gráfico boxplot {categorica_2}.png",
-                                                                    "rb") as f:
-                                                                st.download_button(
-                                                                    label="Baixar o gráfico",
-                                                                    data=f,
-                                                                    file_name=f"Gráfico boxplot {categorica_2}.png",
-                                                                    mime="image/png"
-                                                                )
-
-                                                            pontos = st.radio('Você deseja ver  o violinoplot??', ['Sim', 'Não'])
-                                                            if pontos == 'Sim':
-                                                                pre1 = ['Sim', 'Não ']
-                                                                prencher = st.selectbox(
-                                                                    'Você quer tirar  o preenchimento',
-                                                                    ['Selecione'] + pre1, key = 'p_99')
-                                                                if prencher == 'Sim':
-                                                                    val_pre = False
-                                                                elif prencher == 'Não':
-                                                                    val_pre = True
-                                                                else:
-                                                                    val_pre = True
-
-                                                                fig21, ax = plt.subplots(figsize=(14, 8))
-
-                                                                sns.violinplot(x=Axis_x, y= Eixo_y, hue = dentro_1, width=0.3, data = data, fill = val_pre)
-
-
-                                                                ax.set_ylim(0,
-                                                                            ymax)  # ax.spines['left'].set_linewidth(3)
-                                                                cor = 'black'
-                                                                tom = 'bold'
-                                                                ax.spines['left'].set_linewidth(1)
-                                                                ax.spines['left'].set_color(cor)
-                                                                ax.tick_params(axis='y', labelsize=17, colors=cor)
-                                                                # ax.tick_params(axis = 'y', colors = cor )# cor do eixo y
-
-                                                                ax.set_xticklabels(ax.get_xticklabels(), fontsize=18,
-                                                                                   fontweight='bold', fontfamily=font2)
-                                                                ax.set_ylabel(nome_eixo_y, fontsize=18, weight='bold',
-                                                                              family=font2)
-                                                                ax.set_xlabel(nome_eixo_x, fontsize=18, weight='bold',
-                                                                              family=font2)
-                                                                plt.legend(title=categorica_2, frameon=False,
-                                                                           prop={'weight': 'bold', 'size': 12,
-                                                                                 'family': font2},
-                                                                           title_fontproperties={'weight': 'bold',
-                                                                                                 'size': 11,
-                                                                                                 'family': font2})
-                                                                plt.ylim(0)
-                                                                st.pyplot(fig21)
+                                                            st.pyplot(fig21)
 
 
 
