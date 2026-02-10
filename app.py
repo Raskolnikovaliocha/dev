@@ -1406,11 +1406,9 @@ with tab1:
                         st.subheader('Gráfico boxplot')
 
 
-                        Eixo_y = data.columns[2]
-                        print(Eixo_y)
-                        Axis_x = data.columns[0]
-
-                        dentro_1 = data.columns[1]
+                        Eixo_y = continua     # A variável numérica (SPAD, NPQT...)
+                        Axis_x = categorica   # O Tratamento (Doses)
+                        dentro_1 = categorica_2 # O fator Tempo (Dia)
                         #colocando gráfico um ao lado do outro
                         col1, col2 = st.columns(2)
 
