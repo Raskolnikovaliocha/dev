@@ -1255,10 +1255,25 @@ with tab1:
             if continua != 'Selecione':
                 st.success(f"Você escolheu a variável contínua: {continua}")
 
-                escolhas.append(categorica)
-                escolhas.append(categorica_2)
-                escolhas.append(continua)
-
+            st.write('Você quer fazer modelo misto?')
+            escolhas_misto= st.radio("Você deseja ?", ["Não", "Sim"])
+            if escolhas_misto=="Sim":
+               repeticao= st.selectbox('Escolha a variável repeticao',['Selecione'] +chaves1, key = '78_l')
+               if repeticao == 'Selecione':
+                   st.warning("Por favor, selecione a variável de repetição para prosseguir com o Modelo Misto.")
+               
+               
+                    escolhas.append(repeticao)
+                    escolhas.append(categorica)
+                    escolhas.append(categorica_2)
+                    escolhas.append(continua)
+           else:
+               escolhas.append(categorica)
+               escolhas.append(categorica_2)
+               escolhas.append(continua)
+           
+           if len(escolhas) >= 3:
+               
                 data = data[escolhas]  # escolhi e armazenei as variáveis que quero trabalhar
                 st.write(data)
                 data_na = data.isna().sum()
@@ -2036,6 +2051,29 @@ with tab1:
                                                 st.dataframe(data_grouped)
                                                 st.write(f"R squared adjusted: {model.rsquared_adj}")
                                                 p_value = anova_table['PR(>F)'][2]
+
+                                                
+
+
+                                                # O segredo está aqui: groups=data['Repeticao']
+                                                # Isso diz que a medida é repetida no mesmo indivíduo
+                                                s
+                                                
+                                                # --- CASO MODELO MISTO ---
+                                                if escolhas_misto == "Sim":
+                                                    if repeticao != 'Selecione':
+                                                        st.subheader(f"📊 Resultado: Modelo Misto (Efeito Aleatório: {repeticao})")
+                                                        
+                                                        # O segredo: groups=data[repeticao] 
+                                                        # Ele isola a singularidade da planta que a gente conversou!
+                                                        model_misto = smf.mixedlm(formula, data=data, groups=data[repeticao]).fit()
+                                                        
+                                                        # Exibe aquela tabela técnica detalhada
+                                                        st.text(model_misto.summary())
+                                                        st.write("#### P-valores simplificados")
+                                                        st.dataframe(model_misto.pvalues)
+                                                    else:
+                                                        st.warning("Selecione a variável de repetição para calcular o modelo misto.")
 
                                                 if p_value < 0.05:
                                                     print(f'Análise de tukey para o moddelo {categorica}: {categorica_2}')
