@@ -1259,7 +1259,7 @@ with tab1:
             escolhas_misto= st.radio("Você deseja ?", ["Não", "Sim"])
             if escolhas_misto=="Sim":
                repeticao= st.selectbox('Escolha a variável repeticao',['Selecione'] +chaves1, key = '78_l')
-               if repeticao == 'Selecione':
+               if repeticao!='Selecione':
                    
                    st.warning("Por favor, selecione a variável de repetição para prosseguir com o Modelo Misto.")
                    escolhas.append(repeticao)
