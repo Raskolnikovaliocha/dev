@@ -1271,26 +1271,27 @@ with tab1:
                 escolhas.append(categorica_2)
                 escolhas.append(continua)
            
-           if len(escolhas) >= 3:
-               data = data[escolhas]  # escolhi e armazenei as variáveis que quero trabalhar
-               st.write(data)
-               data_na = data.isna().sum()
-               # fazer uma função aqui! def retirarana(data na , data) e chamo novamente em outro luga
-               if data_na.sum() == 0:
-                   st.write(f'Você Não tem **NA** nas  variáveis de seus dados  ')
-                   st.dataframe(data_na)
+       if len(escolhas) >= 3:
+           
+           data = data[escolhas]  # escolhi e armazenei as variáveis que quero trabalhar
+           st.write(data)
+           data_na = data.isna().sum()
+           # fazer uma função aqui! def retirarana(data na , data) e chamo novamente em outro luga
+           if data_na.sum() == 0:
+               st.write(f'Você Não tem **NA** nas  variáveis de seus dados  ')
+               st.dataframe(data_na)
+           else:
+               st.write(f'Você  tem **NA** nas  variáveis de seus dados  ')
+               st.dataframe(data_na)
+               st.write('Você gostaria de retirar  as **NAs** ou substituir por valores médios?')
+               escolha_2 = st.radio("Você deseja ?", ["Substituir por Valores médios", "Retirar Na"])
+               if escolha_2 == "Substituir por Valores médios":
+                   data = data.fillna(data.median(numeric_only=True))
+                   st.write('Dados com valores médios substituidos no lugar de NA')
+                   st.dataframe(data)
                else:
-                   st.write(f'Você  tem **NA** nas  variáveis de seus dados  ')
-                   st.dataframe(data_na)
-                   st.write('Você gostaria de retirar  as **NAs** ou substituir por valores médios?')
-                   escolha_2 = st.radio("Você deseja ?", ["Substituir por Valores médios", "Retirar Na"])
-                   if escolha_2 == "Substituir por Valores médios":
-                       data = data.fillna(data.median(numeric_only=True))
-                       st.write('Dados com valores médios substituidos no lugar de NA')
-                       st.dataframe(data)
-                   else:
-                       data = data.dropna(axis=1)
-                       st.dataframe(data)  # manter o mes
+                   data = data.dropna(axis=1)
+                   st.dataframe(data)  # manter o mes
 
             if categorica !='Selecione' and categorica_2 != 'Selecione' and continua!= 'Selecione':
                 cv = data.loc[:, continua].values  # transforma em array numpy  e pega os valores, para o cálculo
