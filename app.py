@@ -2029,7 +2029,7 @@ with tab1:
 
                                                 st.header('ANOVA')
                                                 model1 = smf.ols(formula, data=data).fit()
-                                                anova_table = anova_lm(model1)
+                                                anova_table = anova_lm(model1, typ=2)
                                                 st.dataframe(anova_table)
                                                 data_grouped = data.groupby([categorica, categorica_2])[continua].mean().reset_index()
                                                 st.subheader(f'Análise das médias para a interação dos fatores  {categorica} e {categorica_2}')
