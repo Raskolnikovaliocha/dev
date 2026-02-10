@@ -1266,10 +1266,10 @@ with tab1:
                    escolhas.append(categorica)
                    escolhas.append(categorica_2)
                    escolhas.append(continua)
-           else:
-               escolhas.append(categorica)
-               escolhas.append(categorica_2)
-               escolhas.append(continua)
+            else:
+                escolhas.append(categorica)
+                escolhas.append(categorica_2)
+                escolhas.append(continua)
            
            if len(escolhas) >= 3:
                
