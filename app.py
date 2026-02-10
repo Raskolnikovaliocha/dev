@@ -2055,7 +2055,7 @@ with tab1:
 
                                                 # O segredo está aqui: groups=data['Repeticao']
                                                 # Isso diz que a medida é repetida no mesmo indivíduo
-                                                s
+                                                
                                                 
                                                 # --- CASO MODELO MISTO ---
                                                 if escolhas_misto == "Sim":
