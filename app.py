@@ -1260,13 +1260,12 @@ with tab1:
             if escolhas_misto=="Sim":
                repeticao= st.selectbox('Escolha a variável repeticao',['Selecione'] +chaves1, key = '78_l')
                if repeticao == 'Selecione':
+                   
                    st.warning("Por favor, selecione a variável de repetição para prosseguir com o Modelo Misto.")
-               
-               
-                    escolhas.append(repeticao)
-                    escolhas.append(categorica)
-                    escolhas.append(categorica_2)
-                    escolhas.append(continua)
+                   escolhas.append(repeticao)
+                   escolhas.append(categorica)
+                   escolhas.append(categorica_2)
+                   escolhas.append(continua)
            else:
                escolhas.append(categorica)
                escolhas.append(categorica_2)
