@@ -696,7 +696,15 @@ with tab1:
                     data_grouped2 = data.groupby(categorica)[continua].mean().reset_index()
                     st.dataframe(data_grouped2)
 
-                    p_value = anova_table['PR(>F)'][0]
+                    # pegar coluna de p-valor automaticamente
+                    col_p = [c for c in anova_table.columns if 'pr(>f)' in c.lower()]
+
+                    if not col_p:
+                        st.error("Erro: coluna de p-valor não encontrada.")
+                        st.write("Colunas disponíveis:", anova_table.columns)
+                        st.stop()
+                    
+                    p_value = anova_table[col_p[0]].iloc[0]
 
 
 
