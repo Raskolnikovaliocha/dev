@@ -2159,6 +2159,9 @@ with tab1:
                                                 st.subheader(f'Análise das médias para a interação dos fatores  {categorica} e {categorica_2}')
                                                 st.dataframe(data_grouped)
                                                 st.write(f"R squared adjusted: {model.rsquared_adj}")
+                                                st.write(anova_table)
+                                                st.write(anova_table.index)
+                                                st.write(anova_table.columns)
                                                 p_value = anova_table['PR(>F)'][2]
 
                                                 
