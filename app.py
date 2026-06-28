@@ -2215,8 +2215,13 @@ with tab1:
                                                         anova_table1 = anova_lm(model)
                                                         st.dataframe(anova_table1)
                                                         st.write(f"R squared adjusted: {model.rsquared_adj}")
-                                                        p_value1 = anova_table['PR(>F)'][1]
-                                                        p_value2 = anova_table['PR(>F)'][0]
+                                                        #p_value1 = anova_table['PR(>F)'][1]
+                                                        #p_value2 = anova_table['PR(>F)'][0]
+                                                        p_value1 = anova_table1.loc[categorica, 'PR(>F)']
+                                                        p_value2 = anova_table1.loc[categorica_2, 'PR(>F)']
+                                                       
+                                                       
+                                                        
                                                         data_grouped1 = data.groupby(categorica)[continua].mean().reset_index()
 
                                                         st.subheader(f'Análise das médias para o fator {categorica}')
