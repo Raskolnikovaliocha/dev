@@ -1309,6 +1309,211 @@ with tab1:
                 cv2 = np.std(cv) / np.mean(cv) * 100
                 st.write(f"CV% = {cv2}")
 
+                #novo: 
+                st.subheader('Análise de Outliers')
+
+                st.write(
+                    'Os possíveis outliers são identificados pelo método do IQR '
+                    'separadamente para cada combinação dos tratamentos.'
+                )
+                
+                lista_grupos = []
+                lista_outliers = []
+                
+                for (nivel1, nivel2), grupo in data.groupby([categorica, categorica_2]):
+                
+                    grupo = grupo.copy()
+                
+                    # Z-score
+                    desvio = grupo[continua].std()
+                
+                    if desvio == 0:
+                        grupo['zscore'] = 0
+                    else:
+                        grupo['zscore'] = (grupo[continua] - grupo[continua].mean()) / desvio
+                
+                    st.markdown('---')
+                    st.write(f'### {categorica}: {nivel1} | {categorica_2}: {nivel2}')
+                
+                    st.dataframe(grupo)
+                
+                    # KDE
+                    if len(grupo) >= 3 and desvio != 0:
+                
+                        fig2, ax = plt.subplots()
+                
+                        sns.kdeplot(
+                            data=grupo,
+                            x='zscore',
+                            fill=True,
+                            alpha=0.3,
+                            ax=ax
+                        )
+                
+                        plt.axvline(0, color='red', linestyle='--')
+                
+                        ax.set_title("Curva de KDE")
+                
+                        st.pyplot(fig2)
+                
+                    # Boxplot
+                
+                    fig, ax = plt.subplots(figsize=(6,2))
+                
+                    sns.boxplot(
+                        x=grupo[continua],
+                        ax=ax
+                    )
+                
+                    sns.stripplot(
+                        x=grupo[continua],
+                        color='black',
+                        jitter=True,
+                        ax=ax
+                    )
+                
+                    st.pyplot(fig)
+                
+                    # IQR
+                
+                    Q1 = grupo[continua].quantile(0.25)
+                    Q3 = grupo[continua].quantile(0.75)
+                
+                    IQR = Q3 - Q1
+                
+                    LI = Q1 - 1.5 * IQR
+                    LS = Q3 + 1.5 * IQR
+                
+                    st.write(f'Limite inferior = {LI:.3f}')
+                    st.write(f'Limite superior = {LS:.3f}')
+                
+                    out = grupo[
+                        (grupo[continua] < LI) |
+                        (grupo[continua] > LS)
+                    ]
+                
+                    if out.empty:
+                
+                        st.success("Nenhum possível outlier.")
+                
+                    else:
+                
+                        st.warning(f"{len(out)} possível(is) outlier(s).")
+                
+                        st.dataframe(out)
+                
+                        lista_outliers.append(out)
+                
+                    grupo = grupo[
+                        (grupo[continua] >= LI) &
+                        (grupo[continua] <= LS)
+                    ]
+                
+                    lista_grupos.append(grupo)
+                
+                # Pergunta somente depois da análise
+                
+                escolha_3 = st.radio(
+                    "Você deseja retirar os possíveis outliers?",
+                    ["SIM", "Não"],
+                    horizontal=True
+                )
+                
+                if escolha_3 == "SIM":
+                
+                    data = pd.concat(lista_grupos).reset_index(drop=True)
+                
+                    st.success("Os outliers foram retirados com sucesso.")
+                
+                    escolha_4 = st.radio(
+                        "Você gostaria de ver os dados sem outliers?",
+                        ["Sim", "Não"]
+                    )
+                
+                    if escolha_4 == "Sim":
+                
+                        st.dataframe(data)
+                
+                    escolha_5 = st.radio(
+                        "Você deseja ver os gráficos novamente?",
+                        ["Sim", "Não"],
+                        horizontal=True
+                    )
+                
+                    if escolha_5 == "Sim":
+                
+                        st.write("### Dados após remoção dos outliers")
+                
+                        for (nivel1, nivel2), grupo in data.groupby([categorica, categorica_2]):
+                
+                            grupo = grupo.copy()
+                
+                            desvio = grupo[continua].std()
+                
+                            if desvio == 0:
+                                grupo["zscore"] = 0
+                            else:
+                                grupo["zscore"] = (
+                                    grupo[continua] - grupo[continua].mean()
+                                ) / desvio
+                
+                            st.markdown("---")
+                            st.write(f'### {categorica}: {nivel1} | {categorica_2}: {nivel2}')
+                
+                            st.dataframe(grupo)
+                
+                            if len(grupo) >= 3 and desvio != 0:
+                
+                                fig2, ax = plt.subplots()
+                
+                                sns.kdeplot(
+                                    data=grupo,
+                                    x="zscore",
+                                    fill=True,
+                                    alpha=0.3,
+                                    ax=ax
+                                )
+                
+                                plt.axvline(0, color="red", linestyle="--")
+                
+                                st.pyplot(fig2)
+                
+                            fig, ax = plt.subplots(figsize=(6,2))
+                
+                            sns.boxplot(
+                                x=grupo[continua],
+                                ax=ax
+                            )
+                
+                            sns.stripplot(
+                                x=grupo[continua],
+                                color="black",
+                                jitter=True,
+                                ax=ax
+                            )
+                
+                            st.pyplot(fig)
+                
+                        st.write('Análise descritiva dos dados')
+                
+                        data_grouped = data.groupby(
+                            data.columns[0:variavel].tolist()
+                        ).describe()
+                
+                        st.dataframe(data_grouped)
+                
+                        cv = data.loc[:, continua].values
+                
+                        cv2 = np.std(cv) / np.mean(cv) * 100
+                
+                        st.write(f"CV% = {cv2:.2f}")
+
+                
+
+
+                #lixo
+                '''
+
                 st.subheader('Z-score ')
                 zscore = (data[continua] - np.mean(data[continua])) / np.std(data[continua])
                 data2 = data.copy()
@@ -1408,6 +1613,7 @@ with tab1:
                     # cálculo do cv
                     cv2 = np.std(cv) / np.mean(cv) * 100
                     st.write(f"CV% = {cv2}")
+                    '''
 
                     with tab2:
                         st.header('Análise exploratória')
