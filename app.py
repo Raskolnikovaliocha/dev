@@ -2162,7 +2162,7 @@ with tab1:
                                                 st.write(anova_table)
                                                 st.write(anova_table.index)
                                                 st.write(anova_table.columns)
-                                                p_value = anova_table['PR(>F)'][2]
+                                                p_value = anova_table['PR(>F)'].iloc[2]
 
                                                 
 
