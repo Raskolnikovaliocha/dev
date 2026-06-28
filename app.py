@@ -2079,7 +2079,7 @@ with tab1:
                                                     resultado = 'Os resíduos seguem uma distribuição normal '
 
                                                 # Exibindo os resultados
-                                                print(linha)
+                                                
                                                 st.success(f' Valor crítico: {critical_value} ')
                                                 st.success(f'Estatística do teste:  {test.statistic}')
                                                 st.success(reject2)
